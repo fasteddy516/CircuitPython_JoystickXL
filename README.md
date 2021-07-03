@@ -1,1 +1,1 @@
-# CircuitPython_GamepadXL
+# CircuitPython_JoystickXL
