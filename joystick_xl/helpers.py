@@ -15,34 +15,50 @@ class VirtualInput:
 class Axis:
     """Data source storage and scaling/deadband processing for an axis input."""
 
+    @property
+    def min(self) -> int:
+        return self._min
+
+    @property
+    def max(self) -> int:
+        return self._max
+
+    @property
+    def deadband(self) -> int:
+        return self._deadband
+
+    @property
+    def value(self) -> int:
+        return self._value
+
     def __init__(self, source, deadband: int = 0, min: int = 0, max: int = 65535):
         """Create an axis object using the specified input data source object."""
         if not hasattr(source, "value"):
             raise ValueError("Axis source must be an object with a 'value' attribute.")
-        self.source = source
-        self.deadband = deadband
-        self.min = min
-        self.max = max
-        self.value = 0
+        self._source = source
+        self._deadband = deadband
+        self._min = min
+        self._max = max
+        self._value = 0
+
+        # calculate raw input midpoint and scaled deadband range
+        self._raw_midpoint = self._min + ((self._max - self._min) // 2)
+        self._db_range = self._max - self._min - (self._deadband * 2)
 
     def update(self):
         """Read raw input data and convert it to a gamepad-compatible value."""
         # clamp raw input value to specified min/max
-        value = min(max(self.source.value, self.min), self.max)
-
-        # calculate raw input midpoint and scaled deadband range
-        raw_midpoint = self.min + ((self.max - self.min) // 2)
-        db_range = self.max - self.min - (self.deadband * 2)
+        value = min(max(self._source.value, self._min), self._max)
 
         # account for deadband
-        if value < (raw_midpoint - self.deadband):
-            value = value - self.min
-        elif value > (raw_midpoint + self.deadband):
-            value = value - self.min - (self.deadband * 2)
+        if value < (self._raw_midpoint - self._deadband):
+            value = value - self._min
+        elif value > (self._raw_midpoint + self._deadband):
+            value = value - self._min - (self._deadband * 2)
         else:
-            value = db_range // 2
+            value = self._db_range // 2
 
-        # calculate scaled gamepad-compatible value and clamp to +/- 127
-        self.value = min(max(value * 255 // db_range - 127, -127), 127)
+        # calculate scaled joystick-compatible value and clamp to +/- 127
+        self._value = min(max(value * 255 // self._db_range - 127, -127), 127)
 
-        return self.value
+        return self._value
