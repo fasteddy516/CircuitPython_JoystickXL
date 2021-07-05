@@ -72,7 +72,7 @@ class Joystick:
                 and hasattr(device, "send_report")
             ):
                 return device
-        raise ValueError("Could not find GamepadXL HID device.")
+        raise ValueError("Could not find JoystickXL HID device.")
 
     def __init__(self) -> None:
         """Put a docstring here."""
