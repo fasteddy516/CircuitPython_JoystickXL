@@ -28,10 +28,21 @@ class Axis:
         return self._deadband
 
     @property
+    def invert(self) -> bool:
+        return self._invert < 0
+
+    @property
     def value(self) -> int:
         return self._value
 
-    def __init__(self, source, deadband: int = 0, min: int = 0, max: int = 65535):
+    def __init__(
+        self,
+        source,
+        deadband: int = 0,
+        min: int = 0,
+        max: int = 65535,
+        invert: bool = False,
+    ) -> None:
         """Create an axis object using the specified input data source object."""
         if not hasattr(source, "value"):
             raise ValueError("Axis source must be an object with a 'value' attribute.")
@@ -39,6 +50,10 @@ class Axis:
         self._deadband = deadband
         self._min = min
         self._max = max
+        if invert:
+            self._invert = -1
+        else:
+            self._invert = 1
         self._value = 0
 
         # calculate raw input midpoint and scaled deadband range
@@ -67,6 +82,8 @@ class Axis:
             value = self._db_range // 2
 
         # calculate scaled joystick-compatible value and clamp to +/- 127
-        self._value = min(max(value * 255 // self._db_range - 127, -127), 127)
+        self._value = (
+            min(max(value * 255 // self._db_range - 127, -127), 127) * self._invert
+        )
 
         return self._value
