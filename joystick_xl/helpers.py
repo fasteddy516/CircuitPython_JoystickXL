@@ -45,6 +45,14 @@ class Axis:
         self._raw_midpoint = self._min + ((self._max - self._min) // 2)
         self._db_range = self._max - self._min - (self._deadband * 2)
 
+    def set_source_value(self, value: int) -> int:
+        """Set the value property for VirtualInput sources."""
+        if isinstance(self._source, VirtualInput):
+            self._source.value = value
+            return value
+        else:
+            raise TypeError("Only axes with VirtualInput sources can be set manually.")
+
     def update(self):
         """Read raw input data and convert it to a gamepad-compatible value."""
         # clamp raw input value to specified min/max
