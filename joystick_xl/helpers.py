@@ -1,10 +1,12 @@
+"""Classes to help process joystick inputs."""
+
 try:
     from typing import Union
 except ImportError:
     pass
 
-from digitalio import DigitalInOut, Direction, Pull
-from microcontroller import Pin
+from digitalio import DigitalInOut, Direction, Pull  # type: ignore
+from microcontroller import Pin  # type: ignore
 
 
 class VirtualInput:
@@ -20,22 +22,27 @@ class Axis:
 
     @property
     def min(self) -> int:
+        """Return the configured minimum raw ``analogio`` input value."""
         return self._min
 
     @property
     def max(self) -> int:
+        """Return the configured maximum raw ``analogio`` input value."""
         return self._max
 
     @property
     def deadband(self) -> int:
+        """Return the raw, absolute value of the configured deadband."""
         return self._deadband
 
     @property
     def invert(self) -> bool:
+        """Return ``True`` if the raw `analogio` input value is inverted."""
         return self._invert < 0
 
     @property
     def value(self) -> int:
+        """Return the current, fully processed value of this axis."""
         return self._value
 
     def __init__(
@@ -113,7 +120,7 @@ class Hat:
 
     @property
     def active_low(self) -> bool:
-        """Return True if the hat switch inputs are set to active low."""
+        """Return ``True`` if the hat switch inputs are set to active low."""
         return self._active_low
 
     @property

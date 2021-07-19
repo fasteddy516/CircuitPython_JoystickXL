@@ -1,4 +1,5 @@
-"""Put a docstring here."""
+"""The main class for tracking input states and sending HID joystick reports."""
+
 import struct
 import time
 
@@ -7,16 +8,17 @@ try:
 except ImportError:
     pass
 
-import usb_hid
-
-# from typing import Tuple, Union
+import usb_hid  # type: ignore
 
 
 class Joystick:
-    """Put a docstring here."""
+    """Joystick class.
+
+    Details here!
+    """
 
     try:
-        from . import config
+        from . import config  # type: ignore
 
         _num_buttons = config.buttons
         _num_axes = config.axes
@@ -64,7 +66,7 @@ class Joystick:
             raise ValueError(f"'{hat}' is not a valid hat switch name.")
 
     @staticmethod
-    def find_device() -> usb_hid.Device:
+    def _find_device() -> usb_hid.Device:
         for device in usb_hid.devices:
             if (
                 device.usage_page == 0x01
@@ -75,8 +77,8 @@ class Joystick:
         raise ValueError("Could not find JoystickXL HID device.")
 
     def __init__(self) -> None:
-        """Put a docstring here."""
-        self._device = self.find_device()
+        """Init stuff."""
+        self._device = self._find_device()
         self._report = bytearray(self.report_size)
         self._last_report = bytearray(self.report_size)
         self._buttons = 0
@@ -102,6 +104,7 @@ class Joystick:
             self.reset_all()
 
     def reset_all(self) -> None:
+        """Reset stuff."""
         self._buttons = 0
         for i in range(self.num_axes):
             self._axis[i] = 0
@@ -155,26 +158,31 @@ class Joystick:
         return True
 
     def press_buttons(self, *buttons: int) -> None:
+        """Press stuff."""
         for button in buttons:
             if self._validate_button_number(button):
                 self._buttons |= 1 << button - 1
         self._send()
 
     def release_buttons(self, *buttons: int) -> None:
+        """Release stuff."""
         for button in buttons:
             if self._validate_button_number(button):
                 self._buttons &= ~(1 << button - 1)
         self._send()
 
     def release_all_buttons(self) -> None:
+        """Release all stuff."""
         self._buttons = 0
         self._send()
 
     def click_buttons(self, *buttons: int) -> None:
+        """Press then release stuff."""
         self.press_buttons(*buttons)
         self.release_buttons(*buttons)
 
     def move_axes(self, *axes: Tuple[Union[int, str], int]) -> None:
+        """Move stuff."""
         for axis, position in axes:
             if isinstance(axis, str):
                 axis = self._get_axis(axis)
@@ -183,6 +191,7 @@ class Joystick:
         self._send()
 
     def move_hats(self, *hats: Tuple[Union[int, str], int]) -> None:
+        """Get a different point of view."""
         for hat, position in hats:
             if isinstance(hat, str):
                 hat = self._get_hat(hat)
