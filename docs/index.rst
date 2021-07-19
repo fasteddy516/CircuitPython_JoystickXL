@@ -1,16 +1,24 @@
-.. CircuitPython_JoystickXL documentation master file, created by
-   sphinx-quickstart on Mon Jul 19 10:36:46 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. include:: ../README.rst
 
-Welcome to CircuitPython_JoystickXL's documentation!
-====================================================
+Table of Contents
+=================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
+   :hidden:
 
+   self
 
+.. toctree::
+   :caption: API Reference
+   :maxdepth: 3
+
+   api
+
+.. toctree::
+   :caption: Other Links
+   
+   Download <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>
 
 Indices and tables
 ==================
