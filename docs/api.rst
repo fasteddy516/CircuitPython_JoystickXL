@@ -1,4 +1,3 @@
-
 The ``joystick_xl.hid`` Module
 ==============================
 .. automodule:: joystick_xl.hid
