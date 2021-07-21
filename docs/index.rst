@@ -4,7 +4,6 @@
 
    readme
 
-
 .. toctree::
    :caption: Examples
    :hidden:
@@ -24,3 +23,5 @@
    
    Source <https://github.com/fasteddy516/CircuitPython_JoystickXL>
    Latest Release <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>
+
+.. include:: ../README.rst
