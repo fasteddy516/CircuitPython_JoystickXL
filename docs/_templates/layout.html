@@ -1,0 +1,8 @@
+{% extends "!layout.html" %}
+
+  {% block menu %}
+    {{ super() }}
+    <p class="caption" role="heading"><span class="caption-text">Index</span></p>
+    <a href= "{{pathto('genindex.html', 1)}}">General</a>
+    <a href= "{{pathto('py-modindex.html', 1)}}">Modules</a>
+  {% endblock %}

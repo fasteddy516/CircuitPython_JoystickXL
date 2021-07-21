@@ -1,28 +1,26 @@
-.. include:: ../README.rst
-
-Table of Contents
-=================
-
 .. toctree::
-   :maxdepth: 4
+   :caption: Introduction
    :hidden:
 
-   self
+   readme
+
+
+.. toctree::
+   :caption: Examples
+   :hidden:
+
+   examples
 
 .. toctree::
    :caption: API Reference
-   :maxdepth: 3
+   :maxdepth: 4
+   :hidden:
 
    api
 
 .. toctree::
-   :caption: Other Links
+   :caption: Code On GitHub
+   :hidden:
    
-   Download <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Source <https://github.com/fasteddy516/CircuitPython_JoystickXL>
+   Latest Release <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>

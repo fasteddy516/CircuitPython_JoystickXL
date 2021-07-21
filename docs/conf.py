@@ -41,9 +41,18 @@ autodoc_mock_imports = [
     "digitalio",
     "microcontroller",
 ]
+autodoc_typehints = "both"
+autodoc_member_order = "bysource"
+autoclass_content = "both"
+
+# The default language to highlight source code in.
+highlight_language = "python3"
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
+
+# If true, modules names will be prepended to :func:
+add_module_names = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -61,7 +70,6 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
 html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
