@@ -1,4 +1,9 @@
-"""Provides Low-level USB HID configuration tools."""
+"""
+Low-level USB HID configuration tools.
+
+This module provides the necessary functions to create a CircuitPython USB HID device
+with a descriptor that includes the configured type and quantity of inputs.
+"""
 
 import usb_hid  # type: ignore
 
@@ -11,6 +16,7 @@ def create_joystick() -> usb_hid.Device:
         with the specified number of buttons, axes and hat switches.
     :rtype: ``usb_hid.Device``
     """
+    # Use custom input count configuration if it exists, otherwise use defaults.
     try:
         from . import config  # type: ignore
 
@@ -22,7 +28,7 @@ def create_joystick() -> usb_hid.Device:
         _num_axes = 8
         _num_hats = 4
 
-    # Validate the number of configured buttons, axes and hats
+    # Validate the number of configured buttons, axes and hats.
     if _num_buttons < 0 or _num_buttons > 64 or _num_buttons % 8 != 0:
         raise ValueError("Button count must be from 0-64 and divisible by 8.")
 
@@ -33,6 +39,9 @@ def create_joystick() -> usb_hid.Device:
         raise ValueError("Hat count must be from 0-4 and divisible by 2.")
 
     _report_length = 0
+
+    # Formatting is disabled below to allow the USB descriptor elements to be
+    # grouped and annotated such that the descriptor is readable and maintainable.
 
     # fmt: off
     _descriptor = bytearray((
