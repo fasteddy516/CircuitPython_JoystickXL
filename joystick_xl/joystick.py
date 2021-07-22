@@ -1,5 +1,5 @@
 """
-Base JoystickXL class for updating input states and sending USB HID reports.
+The base JoystickXL class for updating input states and sending USB HID reports.
 
 This module provides the necessary functions to create a JoystickXL object,
 retrieve its input counts and update its input states.
@@ -10,11 +10,11 @@ import time
 
 # These typing imports help during development in vscode but fail in CircuitPython
 try:
-    from typing import Tuple, Union
+    from typing import Tuple
 except ImportError:
     pass
 
-import usb_hid  # type: ignore
+import usb_hid  # type: ignore (this is a CircuitPython built-in)
 
 
 class Joystick:
@@ -22,7 +22,7 @@ class Joystick:
 
     # Use custom input count configuration if it exists, otherwise use defaults.
     try:
-        from . import config  # type: ignore
+        from . import config  # type: ignore (config file is optional and may not exist)
 
         _num_buttons = config.buttons
         _num_axes = config.axes
@@ -31,10 +31,6 @@ class Joystick:
         _num_buttons = 64
         _num_axes = 8
         _num_hats = 4
-
-    # Dictionaries to map fiendly names to i/o indices.
-    _axes = {"x": 0, "y": 1, "z": 2, "rx": 3, "ry": 4, "rz": 5, "s0": 6, "s1": 7}
-    _hats = {"h1": 0, "h2": 1, "h3": 2, "h4": 3}
 
     @property
     def num_buttons(self) -> int:
@@ -109,27 +105,11 @@ class Joystick:
         raise ValueError("Could not find JoystickXL HID device - check boot.py.)")
 
     @staticmethod
-    def _get_axis(axis: str) -> int:
-        """Map a friendly axis name <str> to a list index <int>."""
-        try:
-            return Joystick._axes[axis.lower()]
-        except KeyError:
-            raise ValueError(f"'{axis}' is not a valid axis name.")
-
-    @staticmethod
-    def _get_hat(hat: str) -> int:
-        """Map a friendly hat switch name <str> to a list index <int>."""
-        try:
-            return Joystick._hats[hat.lower()]
-        except KeyError:
-            raise ValueError(f"'{hat}' is not a valid hat switch name.")
-
-    @staticmethod
     def _validate_button_number(button: int) -> bool:
         """
         Ensure the supplied button index is valid.
 
-        :param button: The 1-based index of the button to validate.
+        :param button: The 0-based index of the button to validate.
         :type button: int
         :raises ValueError: No buttons are configured for the JoystickXL device.
         :raises ValueError: The supplied button index is out of range.
@@ -138,8 +118,8 @@ class Joystick:
         """
         if Joystick._num_buttons == 0:
             raise ValueError("There are no buttons configured.")
-        if not 1 <= button <= Joystick._num_buttons:
-            raise ValueError(f"Button must be in range 1 to {Joystick._num_buttons}")
+        if not 0 <= button <= Joystick._num_buttons - 1:
+            raise ValueError("Specified button is out of range.")
         return True
 
     @staticmethod
@@ -221,90 +201,77 @@ class Joystick:
             self._hat[i] = 8
         self._send(always=True)
 
-    def press_buttons(self, *buttons: int) -> None:
-        """Press stuff."""
-        for button in buttons:
-            if self._validate_button_number(button):
-                self._buttons |= 1 << button - 1
-        self._send()
-
-    def release_buttons(self, *buttons: int) -> None:
-        """Release stuff."""
-        for button in buttons:
-            if self._validate_button_number(button):
-                self._buttons &= ~(1 << button - 1)
-        self._send()
-
-    def release_all_buttons(self) -> None:
-        """Release all stuff."""
-        self._buttons = 0
-        self._send()
-
-    def click_buttons(self, *buttons: int) -> None:
-        """Press then release stuff."""
-        self.press_buttons(*buttons)
-        self.release_buttons(*buttons)
-
-    def move_axes(
+    def update_button(
         self,
-        *axes: Tuple[Union[int, str], int],
+        *button: Tuple[int, int],
+        defer: bool = False,
+    ) -> None:
+        """
+        Update the value of one or more button input(s).
+
+        :param button: One or more tuples containing a button index (0-based) and
+           value (``True`` if pressed, ``False`` if released).
+        :type button: Tuple[int, int]
+        :param defer: When ``True``, prevents sending a USB HID report upon completion.
+           Defaults to ``False``.
+        :type defer: bool
+
+        .. code::
+
+           # Update a single button
+           update_button((0, True))  # 0 = b1
+
+           # Updates multiple buttons
+           update_button((1, False), (7, True))  # 1 = b2, 7 = b8
+        """
+        for b, value in button:
+            if self._validate_button_number(b):
+                if value:
+                    self._buttons |= 1 << b
+                else:
+                    self._buttons &= ~(1 << b)
+        if not defer:
+            self._send()
+
+    def update_axis(
+        self,
+        *axis: Tuple[int, int],
         defer: bool = False,
     ) -> None:
         """
         Update the value of one or more axis input(s).
 
-        :param axes: One or more Tuples containing an axis index and value.  The axis
-           index can be the 0-based index:
-
-              .. code::
-
-                 move_axes((0, -127), (1, 61))
-
-           or can use an axis name:
-
-              .. code::
-
-                 move_axes(("x", -127), ("y", 61))
-
-           Valid axis names are ``x``, ``y``, ``z``, ``rx``, ``ry``, ``rz``, ``s0``
-           and ``s1``.  Valid axis values range from ``-127`` to ``127``, with ``0``
-           indicating the axis is at rest (centered).
-        :type axes: Tuple[int, int] or Tuple[str, int]
+        :param axis: One or more tuples containing an axis index (0-based) and value
+           (``-127`` to ``127``, with ``0`` indicating the axis is at rest/centered).
+        :type axis: Tuple[int, int]
         :param defer: When ``True``, prevents sending a USB HID report upon completion.
            Defaults to ``False``.
         :type defer: bool
+
+        .. code::
+
+           # Updates a single axis
+           update_axis((0, -121))  # 0 = x-axis
+
+           # Updates multiple axes
+           update_axis((1, 22), (3, -42))  # 1 = y-axis, 3 = rx-axis
         """
-        for axis, position in axes:
-            if isinstance(axis, str):
-                axis = self._get_axis(axis)
-            if self._validate_axis_value(axis, position):
-                self._axis[axis] = position
+        for a, value in axis:
+            if self._validate_axis_value(a, value):
+                self._axis[a] = value
         if not defer:
             self._send()
 
-    def move_hats(
+    def update_hat(
         self,
-        *hats: Tuple[Union[int, str], int],
+        *hat: Tuple[int, int],
         defer: bool = False,
     ) -> None:
         """
         Update the value of one or more hat switch input(s).
 
-        :param hats: One or more Tuples containing a hat switch index and position.  The
-           hat switch index can be the 0-based index:
-
-              .. code::
-
-                 move_hats((0, 1), (1, 8))
-
-           or can use a hat switch name:
-
-              .. code::
-
-                 move_axes(("h1", 1), ("h2", 8))
-
-           Valid hat switch names are ``h1``, ``h2``, ``h3`` and ``h4``.  Valid hat
-           switch values range from ``0`` to ``8`` as follows:
+        :param hat: One or more tuples containing a hat switch index (0-based) and
+           value.  Valid hat switch values range from ``0`` to ``8`` as follows:
 
               * ``0`` = UP
               * ``1`` = UP + RIGHT
@@ -316,15 +283,21 @@ class Joystick:
               * ``7`` = UP + LEFT
               * ``8`` = IDLE
 
-        :type hats: Tuple[int, int] or Tuple[str, int]
+        :type hat: Tuple[int, int]
         :param defer: When ``True``, prevents sending a USB HID report upon completion.
            Defaults to ``False``.
         :type defer: bool
+
+        .. code::
+
+           # Updates a single hat switch
+           update_hat((0, 3))  # 0 = h1
+
+           # Updates multiple hat switches
+           update_hat((1, 8), (3, 1))  # 1 = h2, 3 = h4
         """
-        for hat, position in hats:
-            if isinstance(hat, str):
-                hat = self._get_hat(hat)
-            if self._validate_hat_value(hat, position):
-                self._hat[hat] = position
+        for h, value in hat:
+            if self._validate_hat_value(h, value):
+                self._hat[h] = value
         if not defer:
             self._send()

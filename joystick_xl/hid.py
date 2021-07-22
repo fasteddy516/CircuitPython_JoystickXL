@@ -1,11 +1,11 @@
 """
-Low-level USB HID configuration tools.
+Initial USB configuration tools for use in ``boot.py`` setup.
 
 This module provides the necessary functions to create a CircuitPython USB HID device
 with a descriptor that includes the configured type and quantity of inputs.
 """
 
-import usb_hid  # type: ignore
+import usb_hid  # type: ignore (this is a CircuitPython built-in)
 
 
 def create_joystick() -> usb_hid.Device:
@@ -18,7 +18,7 @@ def create_joystick() -> usb_hid.Device:
     """
     # Use custom input count configuration if it exists, otherwise use defaults.
     try:
-        from . import config  # type: ignore
+        from . import config  # type: ignore (config file is optional and may not exist)
 
         _num_buttons = config.buttons
         _num_axes = config.axes
