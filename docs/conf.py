@@ -37,13 +37,14 @@ extensions = [
 
 # Ignore imports of these modules, which sphinx will not know about.
 autodoc_mock_imports = [
-    "usb_hid",
+    "analogio",
     "digitalio",
     "microcontroller",
+    "usb_hid",
 ]
 autodoc_typehints = "both"
 autodoc_member_order = "bysource"
-autoclass_content = "both"
+autoclass_content = "init"
 
 # The default language to highlight source code in.
 highlight_language = "python3"
