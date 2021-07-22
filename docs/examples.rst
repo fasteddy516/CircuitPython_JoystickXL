@@ -37,7 +37,7 @@ Simple Test
 Joystick - Basic
 ================
 
-(Example coming!)
+.. literalinclude:: ../examples/joystick_basic/code.py
 
 
 Joystick - XL!

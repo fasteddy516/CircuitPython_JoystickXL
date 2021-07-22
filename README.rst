@@ -39,6 +39,12 @@ Using JoystickXL
 (Coming Soon)
 
 
+Testing JoystickXL Devices
+==========================
+* `Pointy's Joystick Test Application <http://www.planetpointy.co.uk/joystick-test-application/>`_
+* `Microsoft DirectX End-User Runtimes (June 2010) <https://www.microsoft.com/en-ca/download/details.aspx?id=8109>`_
+
+
 Documentation
 =============
 Documentation is available at `<https://circuitpython-joystickxl.readthedocs.org>`_.
@@ -49,6 +55,7 @@ Contributing
 If you have questions, problems, feature requests, etc. please post them to the 
 `Issues section on Github <https://github.com/fasteddy516/CircuitPython_JoystickXL/issues>`_.
 If you would like to contribute, please let me know.
+
 
 Acknowledgements
 ================
