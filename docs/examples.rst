@@ -1,18 +1,15 @@
 Boot.py
 =======
 
-JoystickXL creates a custom USB-HID device in CircuitPython which requires
-some special configuration to enable.  This configuration happens in the
-``boot.py`` file in the root folder of the ``CIRCUITPY`` drive.
+In order to use JoystickXL you have to initialize a custom USB HID device in
+the ``boot.py`` file on your CircuitPython device.  If this file does not
+currently exist in the root folder on your ``CIRCUITPY`` drive, you can use
+the standard example below.
 
 .. note::
-    USB customization in ``boot.py`` was introduced in CircuitPython version
-    7.0.0.  **You must be running CircuitPython 7.0.0-alpha3 or newer on your
-    device in order to use JoystickXL.**
 
-If this file already exists on your device, you will need to modify it to
-include the ``create_joystick()`` function call.  If there is no ``boot.py``
-file on your device, you can start with the *standard* example below:
+    You will have to reset your CircuitPython board after creating or modifying
+    ``boot.py`` in order for the changes to be recognized. 
 
 .. literalinclude:: ../examples/boot/standard/boot.py
     :caption: examples/boot/standard/boot.py
@@ -42,28 +39,63 @@ like the ony built-in to Windows to see the various inputs change.
 Joystick - Basic
 ================
 
-This is a fully functional joystick with 2 axes, 4 buttons and a single hat
+This is a fully functional joystick with 2 axes, 2 buttons and a single hat
 switch.
 
 .. literalinclude:: ../examples/joystick_basic/code.py
 
 
-Joystick - XL!
-==============
+Joystick - Advanced
+===================
 
 This is a more extensible example with 8 axes, 24 buttons and 4 hat switches.
 The elements are updated using list comprehensions, so the number of axes,
 buttons, and hat switches can be easily adjusted just by adding or removing
 elements from their respective lists.  Generation/sending of USB HID reports
-is deferred until all inputs are processed to save CPU cycles.
+is deferred until all inputs are processed to save CPU cycles and improve the
+responsiveness of the joystick.
 
-.. literalinclude:: ../examples/joystick_xl/code.py
+.. literalinclude:: ../examples/joystick_advanced/code.py
 
 
 Multi-Unit HOTAS
 ================
 
-(Coming soon!)
+This is a much more complicated example that uses a pair of Adafruit Grand
+Central M4 Express boards to create a HOTAS.  (If you have no idea what that
+is, check out the `Thrustmaster Warthog <https://duckduckgo.com/?q=thrustmaster+warthog&t=h_&iax=images&ia=images&kp=1>`_
+or `Logitech X56 <https://duckduckgo.com/?q=logitech+x56&t=h_&iax=images&ia=images&kp=1>`_.)
+
+The HOTAS example consists of two physically separate units - the *Throttle*
+and the *Stick*.  Each component could have its own USB connection to the host
+computer such that the pair appear as two independant USB HID devices, but this
+can get complicated because:
+
+1. CircuitPython USB HID game controllers (joystick/gamepad) devices all
+   identify themselves to the operating system as ``CircuitPython HID``, which
+   makes it difficult to determine which device is which when more than one
+   device is connected. 
+
+2. A lot of games/flight sims/racing sims have a difficult time distinguishing
+   between multiple controllers, which makes it difficult to get those controls
+   configured properly and consistently.
+
+To alleviate these issues, this example uses a wired (UART) connection
+between the Throttle and Stick, and a single USB connection from the Stick
+to the host computer.  Each piece has 16 buttons, 4 axes and 2 hat switches,
+but the whole collection appears to the host computer as a single 32 button,
+8 axis, 4 hat switch joystick.
+
+This example makes use of JoystickXL's virtual inputs, which allow raw input
+values to be assigned to them in code rather then read directly from GPIO pins.
+This functionality can be used in other "remote I/O" situations, such as using
+an I2C GPIO expander with a much smaller CircuitPython board.
+
+If you look closely, you'll notice that the only really *complicated* parts
+of this example are the bits that deal with the serial communications and the
+associated data processing.  Everything else is almost identical to the
+*Advanced* example above - create a JoystickXL object, create lists with your
+inputs, update the inputs and send a USB HID report.
 
 .. literalinclude:: ../examples/hotas/stick/code.py
 .. literalinclude:: ../examples/hotas/throttle/code.py

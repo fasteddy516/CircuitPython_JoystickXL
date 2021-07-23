@@ -18,15 +18,22 @@ JoystickXL for CircuitPython
 
 Description
 ===========
-This driver simulates a USB HID joystick device with up to 64 buttons, 8 axes
-and 4 Hat (POV) switches.
+This CircuitPython driver simulates a *really big* USB HID joystick device - up
+to 64 buttons, 8 axes and 4 hat (POV) switches.  If you want to build a custom
+game controller with a lot of inputs - *I'm looking at you, space/flight sim
+pilots and racing sim drivers* - JoystickXL can help.
 
 
 Requirements
 ============
-This driver depends on:
+.. note::
 
-* `Adafruit CircuitPython <https://github.com/adafruit/circuitpython>`_ (>= 7.0.0)
+    JoystickXL relies on features that were introduced in CircuitPython version 7.0.0.
+    **You must be running CircuitPython 7.0.0-alpha3 or newer on your device in order
+    to use JoystickXL.**
+
+JoystickXL was made for devices running `Adafruit CircuitPython <https://www.adafruit.com/circuitpython>`_.
+For a list of CircuitPython-compatible devices, see `circuitpython.org <https://circuitpython.org/downloads>`_.
 
 
 Installation
@@ -36,7 +43,13 @@ Installation
 
 Using JoystickXL
 ================
-(Coming Soon)
+JoystickXL creates a custom USB-HID device in CircuitPython which requires
+some special configuration to enable.  This configuration happens in the
+``boot.py`` file in the root folder of the ``CIRCUITPY`` drive.
+
+If this file already exists on your device, you will need to modify it to
+include the ``create_joystick()`` function call.  If there is no ``boot.py``
+file on your device, you can start with the *standard* example below:
 
 
 Testing JoystickXL Devices
