@@ -1,0 +1,4 @@
+/* Hide "Breadcrumbs" header */
+div[aria-label="breadcrumbs navigation"] {
+    display: none;
+}
