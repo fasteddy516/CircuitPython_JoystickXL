@@ -175,13 +175,19 @@ class Joystick:
             raise ValueError("Hat value must be in range 0 to 8")
         return True
 
-    def _send(self, always: bool = False) -> None:
+    def update(self, always: bool = False) -> None:
         """
         Generate a USB HID report and send it to the host if necessary.
 
         :param always: When ``True``, send a report even if it is identical to the last
            report that was sent out.  Defaults to ``False``.
         :type always: bool, optional
+
+        .. note::
+
+           ``update`` is called automatically by ``update_button``, ``update_axis``
+           and ``update_hat`` unless they're called with ``defer = True``.  You only
+           need to call ``update`` manually if you've deferred all automatic updates.
         """
         report_data = list()
 
@@ -206,7 +212,7 @@ class Joystick:
             self._axis[i] = 0
         for i in range(self.num_hats):
             self._hat[i] = 8
-        self._send(always=True)
+        self.update(always=True)
 
     def update_button(
         self,
@@ -238,7 +244,7 @@ class Joystick:
                 else:
                     self._buttons &= ~(1 << b)
         if not defer:
-            self._send()
+            self.update()
 
     def update_axis(
         self,
@@ -267,7 +273,7 @@ class Joystick:
             if self._validate_axis_value(a, value):
                 self._axis[a] = value
         if not defer:
-            self._send()
+            self.update()
 
     def update_hat(
         self,
@@ -307,4 +313,4 @@ class Joystick:
             if self._validate_hat_value(h, value):
                 self._hat[h] = value
         if not defer:
-            self._send()
+            self.update()
