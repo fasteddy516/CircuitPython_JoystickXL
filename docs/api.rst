@@ -32,3 +32,8 @@ on the ``CIRCUITPY`` drive).  Below is a sample file configured for 8 buttons,
 .. note::
    All three variables (``buttons``, ``axes``, ``hats``) **must** be defined in
    ``config.py``, otherwise the file will be ignored and default values will be used.
+
+.. note::
+   On some of the smaller CircuitPython boards (Trinket M0, Gemma M0, etc.), the
+   maximum number of buttons is limited to 24.  This is detected and enforced
+   by default.
