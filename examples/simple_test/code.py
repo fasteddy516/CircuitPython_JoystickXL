@@ -16,14 +16,14 @@ js = Joystick()
 
 while True:
 
-    # Exercise every defined button
+    # Exercise every defined button.
     for i in range(js.num_buttons):
         js.update_button((i, True))
         time.sleep(0.05)
         js.update_button((i, False))
         time.sleep(0.05)
 
-    # Exercise every defined axis
+    # Exercise every defined axis.
     for a in range(js.num_axes):
         for i in range(0, -128, -1):
             js.update_axis((a, i))
@@ -32,7 +32,7 @@ while True:
         for i in range(127, -1, -1):
             js.update_axis((a, i))
 
-    # Exercise every defined hat switch
+    # Exercise every defined hat switch.
     for h in range(js.num_hats):
         for i in range(0, 9):
             js.update_hat((h, i))

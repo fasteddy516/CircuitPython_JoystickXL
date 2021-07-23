@@ -4,15 +4,14 @@ JoystickXL advanced example with 8 axes, 24 buttons, 4 hat switches.
 Tested on an Adafruit Grand Central M4 Express, but should work on other CircuitPython
 boards with a sufficient quantity/type of pins.
 
-* Buttons are on pins D9, D10, D11 and D12
-* Axes are on pins A2 and A3
-* Hat switch is on pins D2 (up), D3 (down), D4 (left) and D7 (right)
+* Buttons are on pins D22-D45
+* Axes are on pins A8-A15
+* Hat switches are on pins D2-D9 and D14-D21
 
 Don't forget to copy boot.py from the example folder to your CIRCUITPY drive.
 """
 
 import board  # type: ignore (this is a CircuitPython built-in)
-
 from joystick_xl.helpers import Axis, Button, Hat
 from joystick_xl.joystick import Joystick
 
@@ -64,14 +63,19 @@ hats = [
 ]
 
 while True:
-    # update button states, defer usb hid report
+    # Update button states but defer USB HID report generation.
     button_values = [(i, b.value) for i, b in enumerate(buttons)]
     joystick.update_button(*button_values, defer=True)
 
-    # update axis values, defer usb hid report
+    # Update axis values but defer USB HID report generation.
     axis_values = [(i, a.value) for i, a in enumerate(axes)]
     joystick.update_axis(*axis_values, defer=True)
 
-    # update hat switch values, send usb hid report when done
+    # Update hat switch values, but defer USB HID report generation.
     hat_values = [(i, h.value) for i, h in enumerate(hats)]
-    joystick.update_hat(*hat_values)
+    joystick.update_hat(*hat_values, defer=True)
+
+    # Send an updated USB HID report if anything has changed.  Deferring USB HID report
+    # generation until all inputs are updated can save a lot of CPU cycles and improve
+    # the responsiveness of the joystick.
+    joystick.update()
