@@ -2,15 +2,17 @@
 The base JoystickXL class for updating input states and sending USB HID reports.
 
 This module provides the necessary functions to create a JoystickXL object,
-retrieve its input counts and update its input states.
+retrieve its input counts, associate input objects and update its input states.
 """
 
 import struct
 import time
 
+from joystick_xl.inputs import Axis, Button, Hat
+
 # These typing imports help during development in vscode but fail in CircuitPython
 try:
-    from typing import Tuple
+    from typing import Tuple, Union
 except ImportError:
     pass
 
@@ -78,18 +80,27 @@ class Joystick:
         self._last_report = bytearray(self._report_size)
         self._format = "<"
 
-        self._buttons = 0
+        self.button = list()
+        """List of button inputs associated with this joystick."""
+
+        self._button_states = 0
         for _ in range(int(self.num_buttons / 8)):
             self._format += "B"
 
-        self._axis = list()
+        self.axis = list()
+        """List of axis inputs associated with this joystick."""
+
+        self._axis_states = list()
         for _ in range(self.num_axes):
-            self._axis.append(0)
+            self._axis_states.append(0)
             self._format += "b"
 
-        self._hat = list()
+        self.hat = list()
+        """List of hat inputs associated with this joystick."""
+
+        self._hat_states = list()
         for i in range(self.num_hats):
-            self._hat.append(8)
+            self._hat_states.append(8)
             if (i + 1) % 2 == 0:
                 self._format += "B"
 
@@ -175,9 +186,35 @@ class Joystick:
             raise ValueError("Hat value must be in range 0 to 8")
         return True
 
+    def add_input(self, *input: Union[Axis, Button, Hat]) -> None:
+        """
+        Associate one or more axis, button or hat inputs with the joystick.
+
+        The provided input(s) are automatically added to the ``axis``, ``button`` and
+        ``hat`` lists based on their type.  The order in which inputs are added will
+        determine their index/reference number. (i.e., the first button object that is
+        added will be ``Joystick.button[0]`` and will correspond to ``Button 1`` on
+        the host device.)  Inputs of all types can be added at the same time.
+
+        :param input: One or more ``Axis``, ``Button`` or ``Hat`` objects.
+        :type input: Union[Axis, Button, Hat]
+        :raises TypeError: If an object that is not an ``Axis``, ``Button`` or ``Hat``
+            is passed in.
+        """
+        for i in input:
+            if isinstance(i, Axis):
+                self.axis.append(i)
+            elif isinstance(i, Button):
+                self.button.append(i)
+            elif isinstance(i, Hat):
+                self.hat.append(i)
+            else:
+                raise TypeError("Input must be a Button, Axis or Hat object.")
+
     def update(self, always: bool = False) -> None:
         """
-        Generate a USB HID report and send it to the host if necessary.
+        Update all inputs in associated input lists, generate a USB HID report and send
+        it to the host if necessary.
 
         :param always: When ``True``, send a report even if it is identical to the last
            report that was sent out.  Defaults to ``False``.
@@ -189,29 +226,48 @@ class Joystick:
            and ``update_hat`` unless they're called with ``defer = True``.  You only
            need to call ``update`` manually if you've deferred all automatic updates.
         """
+        # Update button states but defer USB HID report generation.
+        if len(self.button):
+            button_values = [(i, b.value) for i, b in enumerate(self.button)]
+            self.update_button(*button_values, defer=True)
+
+        # Update axis values but defer USB HID report generation.
+        if len(self.axis):
+            axis_values = [(i, a.value) for i, a in enumerate(self.axis)]
+            self.update_axis(*axis_values, defer=True)
+
+        # Update hat switch values, but defer USB HID report generation.
+        if len(self.hat):
+            hat_values = [(i, h.value) for i, h in enumerate(self.hat)]
+            self.update_hat(*hat_values, defer=True)
+
+        # Generate a USB HID report.
         report_data = list()
 
         for i in range(self.num_buttons // 8):
-            report_data.append((self._buttons >> (i * 8)) & 0xFF)
+            report_data.append((self._button_states >> (i * 8)) & 0xFF)
 
-        report_data.extend(self._axis)
+        report_data.extend(self._axis_states)
 
         for i in range(self.num_hats - 1, 0, -2):
-            report_data.append(((self._hat[i - 1] << 4) | (self._hat[i])) & 0xFF)
+            report_data.append(
+                ((self._hat_states[i - 1] << 4) | (self._hat_states[i])) & 0xFF
+            )
 
         struct.pack_into(self._format, self._report, 0, *report_data)
 
+        # Send the USB HID report if required.
         if always or self._last_report != self._report:
             self._device.send_report(self._report)
             self._last_report[:] = self._report
 
     def reset_all(self) -> None:
         """Reset all inputs to their resting states."""
-        self._buttons = 0
+        self._button_states = 0
         for i in range(self.num_axes):
-            self._axis[i] = 0
+            self._axis_states[i] = 0
         for i in range(self.num_hats):
-            self._hat[i] = 8
+            self._hat_states[i] = 8
         self.update(always=True)
 
     def update_button(
@@ -240,9 +296,9 @@ class Joystick:
         for b, value in button:
             if self._validate_button_number(b):
                 if value:
-                    self._buttons |= 1 << b
+                    self._button_states |= 1 << b
                 else:
-                    self._buttons &= ~(1 << b)
+                    self._button_states &= ~(1 << b)
         if not defer:
             self.update()
 
@@ -271,7 +327,7 @@ class Joystick:
         """
         for a, value in axis:
             if self._validate_axis_value(a, value):
-                self._axis[a] = value
+                self._axis_states[a] = value
         if not defer:
             self.update()
 
@@ -311,6 +367,6 @@ class Joystick:
         """
         for h, value in hat:
             if self._validate_hat_value(h, value):
-                self._hat[h] = value
+                self._hat_states[h] = value
         if not defer:
             self.update()
