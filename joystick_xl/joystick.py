@@ -224,8 +224,7 @@ class Joystick:
 
     def update(self, always: bool = False) -> None:
         """
-        Update all inputs in associated input lists, generate a USB HID report and send
-        it to the host if necessary.
+        Update all inputs in associated input lists and generate a USB HID.
 
         :param always: When ``True``, send a report even if it is identical to the last
            report that was sent out.  Defaults to ``False``.
