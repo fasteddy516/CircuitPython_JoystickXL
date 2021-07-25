@@ -138,16 +138,7 @@ while True:
 
                 # update hat switch virtual inputs with raw states from throttle.
                 for i in range(2):
-                    hotas.hat[i + 2].up_source_value = (data[5] >> (4 * i)) & 0x01
-                    hotas.hat[i + 2].down_source_value = (
-                        data[5] >> ((4 * i) + 1)
-                    ) & 0x01
-                    hotas.hat[i + 2].left_source_value = (
-                        data[5] >> ((4 * i) + 2)
-                    ) & 0x01
-                    hotas.hat[i + 2].right_source_value = (
-                        data[5] >> ((4 * i) + 3)
-                    ) & 0x01
+                    hotas.hat[i + 2].unpack_source_values(data[5] >> (4 * i))
 
     # At this point we have collected all remote data and can update everything.
     hotas.update()
