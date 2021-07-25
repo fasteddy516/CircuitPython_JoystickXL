@@ -219,12 +219,6 @@ class Joystick:
         :param always: When ``True``, send a report even if it is identical to the last
            report that was sent out.  Defaults to ``False``.
         :type always: bool, optional
-
-        .. note::
-
-           ``update`` is called automatically by ``update_button``, ``update_axis``
-           and ``update_hat`` unless they're called with ``defer = True``.  You only
-           need to call ``update`` manually if you've deferred all automatic updates.
         """
         # Update button states but defer USB HID report generation.
         if len(self.button):
@@ -292,6 +286,11 @@ class Joystick:
 
            # Updates multiple buttons
            update_button((1, False), (7, True))  # 1 = b2, 7 = b8
+
+        .. note::
+
+           ``update_button`` is called automatically for any button objects added to the
+           built in ``Joystick.button[]`` list when ``Joystick.update()`` is called.
         """
         for b, value in button:
             if self._validate_button_number(b):
@@ -324,6 +323,11 @@ class Joystick:
 
            # Updates multiple axes
            update_axis((1, 22), (3, -42))  # 1 = y-axis, 3 = rx-axis
+
+        .. note::
+
+           ``update_axis`` is called automatically for any axis objects added to the
+           built in ``Joystick.axis[]`` list when ``Joystick.update()`` is called.
         """
         for a, value in axis:
             if self._validate_axis_value(a, value):
@@ -364,6 +368,11 @@ class Joystick:
 
            # Updates multiple hat switches
            update_hat((1, 8), (3, 1))  # 1 = h2, 3 = h4
+
+        .. note::
+
+           ``update_hat`` is called automatically for any hat switch objects added to
+           the built in ``Joystick.hat[]`` list when ``Joystick.update()`` is called.
         """
         for h, value in hat:
             if self._validate_hat_value(h, value):
