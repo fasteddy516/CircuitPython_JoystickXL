@@ -203,11 +203,20 @@ class Joystick:
         """
         for i in input:
             if isinstance(i, Axis):
-                self.axis.append(i)
+                if len(self.axis) < self._num_axes:
+                    self.axis.append(i)
+                else:
+                    raise ValueError("List is full, cannot add another axis.")
             elif isinstance(i, Button):
-                self.button.append(i)
+                if len(self.button) < self._num_buttons:
+                    self.button.append(i)
+                else:
+                    raise ValueError("List is full, cannot add another button.")
             elif isinstance(i, Hat):
-                self.hat.append(i)
+                if len(self.hat) < self._num_hats:
+                    self.hat.append(i)
+                else:
+                    raise ValueError("List is full, cannot add another hat switch.")
             else:
                 raise TypeError("Input must be a Button, Axis or Hat object.")
 
