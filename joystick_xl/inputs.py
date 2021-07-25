@@ -477,6 +477,23 @@ class Hat:
 
         self._update()
 
+    def unpack_source_values(self, source_values: int) -> None:
+        """
+        Unpack all four source values from a single packed integer.
+
+        :param source_values: Packed button source values in one byte (``0000RLDU``).
+        :type source_values: int
+
+        .. note::
+
+            This operation is only valid for hat switches composed of
+            ``VirtualInput`` objects.
+        """
+        self.up.source_value = (source_values & 0x01) == 0x01
+        self.down.source_value = ((source_values >> 1) & 0x01) == 0x01
+        self.left.source_value = ((source_values >> 2) & 0x01) == 0x01
+        self.right.source_value = ((source_values >> 3) & 0x01) == 0x01
+
     def _update(self) -> int:
         """Update the angular position value based on discrete input states."""
         U = self.up.value
