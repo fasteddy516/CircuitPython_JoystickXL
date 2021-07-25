@@ -285,32 +285,32 @@ class Axis:
 class Hat:
     """Data source storage and value conversion for hat switch inputs."""
 
-    """Alias for the `UP` switch position."""
     U = 0
+    """Alias for the `UP` switch position."""
 
-    """Alias for the ``UP + RIGHT`` switch position."""
     UR = 1
+    """Alias for the ``UP + RIGHT`` switch position."""
 
-    """Alias for the ``RIGHT`` switch position."""
     R = 2
+    """Alias for the ``RIGHT`` switch position."""
 
-    """Alias for the ``DOWN + RIGHT`` switch position."""
     DR = 3
+    """Alias for the ``DOWN + RIGHT`` switch position."""
 
-    """Alias for the ``DOWN`` switch position."""
     D = 4
+    """Alias for the ``DOWN`` switch position."""
 
-    """Alias for the ``DOWN + LEFT`` switch position."""
     DL = 5
+    """Alias for the ``DOWN + LEFT`` switch position."""
 
-    """Alias for the ``LEFT`` switch position."""
     L = 6
+    """Alias for the ``LEFT`` switch position."""
 
-    """Alias for the ``UP + LEFT`` switch position."""
     UL = 7
+    """Alias for the ``UP + LEFT`` switch position."""
 
-    """Alias for the ``IDLE`` switch position."""
     IDLE = 8
+    """Alias for the ``IDLE`` switch position."""
 
     @property
     def value(self) -> int:
