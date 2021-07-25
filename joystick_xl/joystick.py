@@ -200,23 +200,25 @@ class Joystick:
         :type input: Union[Axis, Button, Hat]
         :raises TypeError: If an object that is not an ``Axis``, ``Button`` or ``Hat``
             is passed in.
+        :raises OverflowError: If an attempt is made to add more than the available
+            number of axes, buttons or hat switches to the respective list.
         """
         for i in input:
             if isinstance(i, Axis):
                 if len(self.axis) < self._num_axes:
                     self.axis.append(i)
                 else:
-                    raise ValueError("List is full, cannot add another axis.")
+                    raise OverflowError("List is full, cannot add another axis.")
             elif isinstance(i, Button):
                 if len(self.button) < self._num_buttons:
                     self.button.append(i)
                 else:
-                    raise ValueError("List is full, cannot add another button.")
+                    raise OverflowError("List is full, cannot add another button.")
             elif isinstance(i, Hat):
                 if len(self.hat) < self._num_hats:
                     self.hat.append(i)
                 else:
-                    raise ValueError("List is full, cannot add another hat switch.")
+                    raise OverflowError("List is full, cannot add another hat switch.")
             else:
                 raise TypeError("Input must be a Button, Axis or Hat object.")
 
