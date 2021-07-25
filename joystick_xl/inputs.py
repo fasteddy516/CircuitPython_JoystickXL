@@ -112,29 +112,29 @@ class Button:
 class Axis:
     """Data source storage and scaling/deadband processing for an axis input."""
 
-    """Alias for the X-axis index."""
     X = 0
+    """Alias for the X-axis index."""
 
-    """Alias for the Y-axis index."""
     Y = 1
+    """Alias for the Y-axis index."""
 
-    """Alias for the Z-axis index."""
     Z = 2
+    """Alias for the Z-axis index."""
 
-    """Alias for the RX-axis index."""
     RX = 3
+    """Alias for the RX-axis index."""
 
-    """Alias for the RY-axis index."""
     RY = 4
+    """Alias for the RY-axis index."""
 
-    """Alias for the RZ-axis index."""
     RZ = 5
+    """Alias for the RZ-axis index."""
 
-    """Alias for the S0-axis index."""
     S0 = 6
+    """Alias for the S0-axis index."""
 
-    """Alias for the S1-axis index."""
     S1 = 7
+    """Alias for the S1-axis index."""
 
     @property
     def value(self) -> int:
