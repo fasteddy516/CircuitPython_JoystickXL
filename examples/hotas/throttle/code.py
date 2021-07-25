@@ -22,7 +22,7 @@ import struct
 
 import board  # type: ignore (This is a CircuitPython built-in)
 import busio  # type: ignore (This too!)
-from joystick_xl.helpers import Axis, Button, Hat
+from joystick_xl.inputs import Axis, Button, Hat
 
 # Prepare serial (UART) comms to communicate with stick component.
 uart = busio.UART(board.TX, board.RX, baudrate=115200)

@@ -1,8 +1,8 @@
 """
 Classes to simplify mapping GPIO pins and values to JoystickXL inputs and states.
 
-This module provides a set of helper classes to aid in configuring GPIO pins and
-convert their raw states to values that are usable by JoystickXL.
+This module provides a set of classes to aid in configuring GPIO pins and convert
+their raw states to values that are usable by JoystickXL.
 """
 
 # These typing imports help during development in vscode but fail in CircuitPython

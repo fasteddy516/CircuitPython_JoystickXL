@@ -8,9 +8,9 @@
 .. automodule:: joystick_xl.joystick
    :members:
 
-``joystick_xl.helpers``
+``joystick_xl.inputs``
 =======================================
-.. automodule:: joystick_xl.helpers
+.. automodule:: joystick_xl.inputs
    :members:
 
 ``config.py``

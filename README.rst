@@ -85,7 +85,7 @@ Using JoystickXL
      
       """code.py"""
       import board
-      from joystick_xl.helpers import Axis, Button, Hat
+      from joystick_xl.inputs import Axis, Button, Hat
       from joystick_xl.joystick import Joystick
    
       js = Joystick()

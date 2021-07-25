@@ -12,7 +12,7 @@ Don't forget to copy boot.py from the example folder to your CIRCUITPY drive.
 """
 
 import board  # type: ignore (this is a CircuitPython built-in)
-from joystick_xl.helpers import Axis, Button, Hat
+from joystick_xl.inputs import Axis, Button, Hat
 from joystick_xl.joystick import Joystick
 
 joystick = Joystick()

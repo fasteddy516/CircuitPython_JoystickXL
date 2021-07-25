@@ -21,7 +21,7 @@ import struct
 
 import board  # type: ignore (This is a CircuitPython built-in)
 import busio  # type: ignore (This too!)
-from joystick_xl.helpers import Axis, Button, Hat
+from joystick_xl.inputs import Axis, Button, Hat
 from joystick_xl.joystick import Joystick
 
 # Prepare serial (UART) comms to communicate with throttle component.
