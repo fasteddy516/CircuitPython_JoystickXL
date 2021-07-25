@@ -90,20 +90,15 @@ Using JoystickXL
    
       js = Joystick()
    
-      buttons = [Button(board.D9), Button(board.D10)]
-      axes = [Axis(board.A2), Axis(board.A3)]
-      hats = [Hat(up=board.D2, down=board.D3, left=board.D4, right=board.D7)]
-   
+      js.add_input(
+          Button(board.D9),
+          Button(board.D10),
+          Axis(board.A2),
+          Axis(board.A3),
+          Hat(up=board.D2, down=board.D3, left=board.D4, right=board.D7),
+      )
+
       while True:
-          button_values = [(i, b.value) for i, b in enumerate(buttons)]
-          js.update_button(*button_values, defer=True)
-   
-          axis_values = [(i, a.value) for i, a in enumerate(axes)]
-          js.update_axis(*axis_values, defer=True)
-    
-          hat_values = [(i, h.value) for i, h in enumerate(hats)]
-          js.update_hat(*hat_values, defer=True)
-   
           js.update()
 
    See the `examples <https://circuitpython-joystickxl.readthedocs.io/en/latest/examples.html>`_

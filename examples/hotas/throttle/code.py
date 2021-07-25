@@ -93,10 +93,7 @@ while True:
             # Collect raw hat switch states.
             hat_states = 0
             for i, h in enumerate(hats):
-                hat_states |= h.up_source_value << (4 * i)
-                hat_states |= h.down_source_value << ((4 * i) + 1)
-                hat_states |= h.left_source_value << ((4 * i) + 2)
-                hat_states |= h.right_source_value << ((4 * i) + 3)
+                hat_states |= h.packed_source_values << (4 * i)
 
             # Pack up all the data in a byte array.
             tx = bytearray(15)

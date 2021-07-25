@@ -17,13 +17,13 @@ from joystick_xl.joystick import Joystick
 
 joystick = Joystick()
 
-b1 = Button(board.D9)
-b2 = Button(board.D10)
-x = Axis(board.A2)
-y = Axis(board.A3)
-h = Hat(up=board.D2, down=board.D3, left=board.D4, right=board.D7)
+joystick.add_input(
+    Button(board.D9),
+    Button(board.D10),
+    Axis(board.A2),
+    Axis(board.A3),
+    Hat(up=board.D2, down=board.D3, left=board.D4, right=board.D7),
+)
 
 while True:
-    joystick.update_button((0, b1.value), (1, b2.value))
-    joystick.update_axis((0, x.value), (1, y.value))
-    joystick.update_hat((0, h.value))
+    joystick.update()

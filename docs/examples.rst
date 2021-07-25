@@ -48,12 +48,9 @@ switch.
 Joystick - Advanced
 ===================
 
-This is a more extensible example with 8 axes, 24 buttons and 4 hat switches.
-The elements are updated using list comprehensions, so the number of axes,
-buttons, and hat switches can be easily adjusted just by adding or removing
-elements from their respective lists.  Generation/sending of USB HID reports
-is deferred until all inputs are processed to save CPU cycles and improve the
-responsiveness of the joystick.
+This is a fully functional joystick with 8 axes, 24 buttons and 4 hat switches.
+Notice the only difference between this example and the basic example is the
+number of inputs added with ``add_input``. 
 
 .. literalinclude:: ../examples/joystick_advanced/code.py
 
@@ -94,8 +91,8 @@ an I2C GPIO expander with a much smaller CircuitPython board.
 If you look closely, you'll notice that the only really *complicated* parts
 of this example are the bits that deal with the serial communications and the
 associated data processing.  Everything else is almost identical to the
-*Advanced* example above - create a JoystickXL object, create lists with your
-inputs, update the inputs and send a USB HID report.
+*Basic* example above - create a JoystickXL object, associate inputs with it,
+make sure you call the jooystick's ``update()`` method in your main loop.
 
 .. literalinclude:: ../examples/hotas/stick/code.py
 .. literalinclude:: ../examples/hotas/throttle/code.py

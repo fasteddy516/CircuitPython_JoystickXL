@@ -17,7 +17,7 @@ from joystick_xl.joystick import Joystick
 
 joystick = Joystick()
 
-buttons = [
+joystick.add_input(
     Button(board.D22),
     Button(board.D23),
     Button(board.D24),
@@ -42,9 +42,6 @@ buttons = [
     Button(board.D43),
     Button(board.D44),
     Button(board.D45),
-]
-
-axes = [
     Axis(board.A8),
     Axis(board.A9),
     Axis(board.A10),
@@ -53,29 +50,11 @@ axes = [
     Axis(board.A13),
     Axis(board.A14),
     Axis(board.A15),
-]
-
-hats = [
     Hat(up=board.D2, down=board.D3, left=board.D4, right=board.D5),
     Hat(up=board.D6, down=board.D7, left=board.D8, right=board.D9),
     Hat(up=board.D14, down=board.D15, left=board.D16, right=board.D17),
     Hat(up=board.D18, down=board.D19, left=board.D20, right=board.D21),
-]
+)
 
 while True:
-    # Update button states but defer USB HID report generation.
-    button_values = [(i, b.value) for i, b in enumerate(buttons)]
-    joystick.update_button(*button_values, defer=True)
-
-    # Update axis values but defer USB HID report generation.
-    axis_values = [(i, a.value) for i, a in enumerate(axes)]
-    joystick.update_axis(*axis_values, defer=True)
-
-    # Update hat switch values, but defer USB HID report generation.
-    hat_values = [(i, h.value) for i, h in enumerate(hats)]
-    joystick.update_hat(*hat_values, defer=True)
-
-    # Send an updated USB HID report if anything has changed.  Deferring USB HID report
-    # generation until all inputs are updated can save a lot of CPU cycles and improve
-    # the responsiveness of the joystick.
     joystick.update()

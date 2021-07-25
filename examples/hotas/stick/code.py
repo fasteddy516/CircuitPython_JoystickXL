@@ -32,10 +32,15 @@ STX = 0x02  # start-of-transmission
 ETX = 0x03  # end-of-transmission
 REQ = 0x05  # data request
 
+# Axis configuration constants
+AXIS_DB = 2500  # Deadband to apply to axis center points.
+AXIS_MIN = 250  # Minimum raw axis value.
+AXIS_MAX = 65285  # Maximum raw axis value.
+
 # Prepare USB HID HOTAS device.
 hotas = Joystick()
 
-buttons = [
+hotas.add_input(
     # The first 16 buttons are local I/O associated with the stick component, which
     # connects to the host via USB.
     Button(board.D22),
@@ -72,13 +77,6 @@ buttons = [
     Button(),
     Button(),
     Button(),
-]
-
-AXIS_DB = 2500  # Deadband to apply to axis center points.
-AXIS_MIN = 250  # Minimum raw axis value.
-AXIS_MAX = 65285  # Maximum raw axis value.
-
-axes = [
     # The first 4 axes are local I/O associated with the stick component.
     Axis(board.A8, deadband=AXIS_DB, min=AXIS_MIN, max=AXIS_MAX),
     Axis(board.A9, deadband=AXIS_DB, min=AXIS_MIN, max=AXIS_MAX),
@@ -89,16 +87,13 @@ axes = [
     Axis(deadband=AXIS_DB, min=AXIS_MIN, max=AXIS_MAX),
     Axis(deadband=AXIS_DB, min=AXIS_MIN, max=AXIS_MAX),
     Axis(deadband=AXIS_DB, min=AXIS_MIN, max=AXIS_MAX),
-]
-
-hats = [
     # The first 2 hat switches are local I/O associated with the stick component.
     Hat(up=board.D14, down=board.D15, left=board.D16, right=board.D17),
     Hat(up=board.D18, down=board.D19, left=board.D20, right=board.D21),
     # The last 2 hat switches are virtual I/O associated with the throttle component.
     Hat(),
     Hat(),
-]
+)
 
 # Stick and Throttle input processing loop.
 while True:
@@ -135,28 +130,24 @@ while True:
 
                 # Update button virtual inputs with raw states from throttle.
                 for i in range(16):
-                    buttons[i + 16].source_value = (data[0] >> i) & 0x01
+                    hotas.button[i + 16].source_value = (data[0] >> i) & 0x01
 
                 # Update axis virtual inputs with raw states from throttle.
                 for i in range(4):
-                    axes[i + 4].source_value = data[1 + i]
+                    hotas.axis[i + 4].source_value = data[1 + i]
 
                 # update hat switch virtual inputs with raw states from throttle.
                 for i in range(2):
-                    hats[i + 2].up_source_value = (data[5] >> (4 * i)) & 0x01
-                    hats[i + 2].down_source_value = (data[5] >> ((4 * i) + 1)) & 0x01
-                    hats[i + 2].left_source_value = (data[5] >> ((4 * i) + 2)) & 0x01
-                    hats[i + 2].right_source_value = (data[5] >> ((4 * i) + 3)) & 0x01
+                    hotas.hat[i + 2].up_source_value = (data[5] >> (4 * i)) & 0x01
+                    hotas.hat[i + 2].down_source_value = (
+                        data[5] >> ((4 * i) + 1)
+                    ) & 0x01
+                    hotas.hat[i + 2].left_source_value = (
+                        data[5] >> ((4 * i) + 2)
+                    ) & 0x01
+                    hotas.hat[i + 2].right_source_value = (
+                        data[5] >> ((4 * i) + 3)
+                    ) & 0x01
 
     # At this point we have collected all remote data and can update everything.
-
-    button_values = [(i, b.value) for i, b in enumerate(buttons)]
-    hotas.update_button(*button_values, defer=True)
-
-    axis_values = [(i, a.value) for i, a in enumerate(axes)]
-    hotas.update_axis(*axis_values, defer=True)
-
-    hat_values = [(i, h.value) for i, h in enumerate(hats)]
-    hotas.update_hat(*hat_values, defer=True)
-
     hotas.update()
