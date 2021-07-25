@@ -45,6 +45,26 @@ class Button:
         return self._source.value != self._active_low
 
     @property
+    def is_pressed(self) -> bool:
+        """
+        Determine if this button is currently in the ``pressed`` state.
+
+        :return: ``True`` if button is pressed, otherwise ``False``
+        :rtype: bool
+        """
+        return self._source.value != self._active_low
+
+    @property
+    def is_released(self) -> bool:
+        """
+        Determine if this button is currently in the ``released`` state.
+
+        :return: ``True`` if button is released, otherwise ``False``.
+        :rtype: bool
+        """
+        return self._source.value == self._active_low
+
+    @property
     def source_value(self) -> bool:
         """
         Get the raw source input value.
