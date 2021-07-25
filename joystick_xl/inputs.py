@@ -338,7 +338,7 @@ class Hat:
         """
         Get the current packed value of all four button input source values.
 
-        :return: Packed button input source values in one byte (0000RLDU).
+        :return: Packed button input source values in one byte (``0000RLDU``).
         :rtype: int
         """
         pv = self.up.source_value
