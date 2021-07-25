@@ -25,56 +25,10 @@ class VirtualInput:
         Provide an object with a ``.value`` property to represent a remote input.
 
         :param value: Sets the initial .value property (Should be ``True`` for
-           buttons, ``32768`` for axes).
+            buttons, ``32768`` for axes).
         :type value: Union[bool, int]
         """
         self.value = value
-
-
-def _initialize_digital_source(
-    pin: Union[Pin, VirtualInput],
-    active_low: bool,
-) -> Union[DigitalInOut, VirtualInput]:
-    """
-    Configure a source as a GPIO digital input pin or VirtualInput.
-
-    :param pin: CircuitPython pin identifier (i.e. ``board.D2``), or a ``VirtualInput``
-       object.
-    :type pin: Pin or VirtualInput
-    :param active_low: Set to ``True`` if the input pin is active low (reads ``False``
-       when the button is pressed), otherwise set to ``False``.
-    :type active_low: bool
-    :return: A fully configured digital source pin or virtual input.
-    :rtype: DigitalInOut or VirtualInput
-    """
-    if isinstance(pin, Pin):
-        source = DigitalInOut(pin)
-        source.direction = Direction.INPUT
-        if active_low:
-            source.pull = Pull.UP
-        else:
-            source.pull = Pull.DOWN
-        return source
-    else:
-        return VirtualInput(value=active_low)
-
-
-def _initialize_analog_source(
-    pin: Union[Pin, VirtualInput],
-) -> Union[AnalogIn, VirtualInput]:
-    """
-    Configure a source as a GPIO analog input pin or VirtualInput.
-
-    :param pin: CircuitPython pin identifier (i.e. ``board.A3``), or a ``VirtualInput``
-       object.
-    :type pin: Pin or VirtualInput
-    :return: A fully configured analog source pin or virtual input.
-    :rtype: AnalogIn or VirtualInput
-    """
-    if isinstance(pin, Pin):
-        return AnalogIn(pin)
-    else:
-        return VirtualInput(value=32768)
 
 
 class Button:
@@ -123,8 +77,36 @@ class Button:
            (defaults to ``True``)
         :type active_low: bool, optional
         """
-        self._source = _initialize_digital_source(source, active_low)
+        self._source = Button._initialize_source(source, active_low)
         self._active_low = active_low
+
+    @staticmethod
+    def _initialize_source(
+        pin: Union[Pin, VirtualInput],
+        active_low: bool,
+    ) -> Union[DigitalInOut, VirtualInput]:
+        """
+        Configure a source as a GPIO digital input pin or VirtualInput.
+
+        :param pin: CircuitPython pin identifier (i.e. ``board.D2``), or a
+            ``VirtualInput`` object.
+        :type pin: Pin or VirtualInput
+        :param active_low: Set to ``True`` if the input pin is active low (reads
+            ``False`` when the button is pressed), otherwise set to ``False``.
+        :type active_low: bool
+        :return: A fully configured digital source pin or virtual input.
+        :rtype: DigitalInOut or VirtualInput
+        """
+        if isinstance(pin, Pin):
+            source = DigitalInOut(pin)
+            source.direction = Direction.INPUT
+            if active_low:
+                source.pull = Pull.UP
+            else:
+                source.pull = Pull.DOWN
+            return source
+        else:
+            return VirtualInput(value=active_low)
 
 
 class Axis:
@@ -237,7 +219,7 @@ class Axis:
            (defaults to ``False``)
         :type invert: bool, optional
         """
-        self._source = _initialize_analog_source(source)
+        self._source = Axis._initialize_source(source)
         self._deadband = deadband
         self._min = min
         self._max = max
@@ -253,6 +235,24 @@ class Axis:
         self._db_range = self._max - self._min - (self._deadband * 2)
 
         self._update()
+
+    @staticmethod
+    def _initialize_source(
+        pin: Union[Pin, VirtualInput],
+    ) -> Union[AnalogIn, VirtualInput]:
+        """
+        Configure a source as a GPIO analog input pin or VirtualInput.
+
+        :param pin: CircuitPython pin identifier (i.e. ``board.A3``), or a
+            ``VirtualInput`` object.
+        :type pin: Pin or VirtualInput
+        :return: A fully configured analog source pin or virtual input.
+        :rtype: AnalogIn or VirtualInput
+        """
+        if isinstance(pin, Pin):
+            return AnalogIn(pin)
+        else:
+            return VirtualInput(value=32768)
 
     def _update(self) -> int:
         """Read raw input data and convert it to a joystick-compatible value.
@@ -319,15 +319,15 @@ class Hat:
 
         :return: Current position value, as follows:
 
-              * ``0`` = UP
-              * ``1`` = UP + RIGHT
-              * ``2`` = RIGHT
-              * ``3`` = DOWN + RIGHT
-              * ``4`` = DOWN
-              * ``5`` = DOWN + LEFT
-              * ``6`` = LEFT
-              * ``7`` = UP + LEFT
-              * ``8`` = IDLE
+                * ``0`` = UP
+                * ``1`` = UP + RIGHT
+                * ``2`` = RIGHT
+                * ``3`` = DOWN + RIGHT
+                * ``4`` = DOWN
+                * ``5`` = DOWN + LEFT
+                * ``6`` = LEFT
+                * ``7`` = UP + LEFT
+                * ``8`` = IDLE
 
         :rtype: int
         """
@@ -337,110 +337,6 @@ class Hat:
     def active_low(self) -> bool:
         """Return ``True`` if the hat switch inputs are set to active low."""
         return self._active_low
-
-    @property
-    def up(self) -> bool:
-        """
-        Get the current, fully processed value of the up input.
-
-        :return: ``True`` if pressed, ``False`` if released.
-        :rtype: bool
-        """
-        return self._up.value != self._active_low
-
-    @property
-    def up_source_value(self) -> bool:
-        """
-        Get the raw ``up`` input source value.
-
-        For ``VirtualInput`` sources, this property can also be set.
-        """
-        return self._up.value is True
-
-    @up_source_value.setter
-    def up_source_value(self, value: bool) -> None:
-        """Allow setting the logical up input state for VirtualInputs."""
-        if not isinstance(self._up, VirtualInput):
-            raise TypeError("Only VirtualInput source values can be set manually.")
-        self._up.value = value
-
-    @property
-    def down(self) -> bool:
-        """
-        Get the current, fully processed value of the down input.
-
-        :return: ``True`` if pressed, ``False`` if released.
-        :rtype: bool
-        """
-        return self._down.value != self._active_low
-
-    @property
-    def down_source_value(self) -> bool:
-        """
-        Get the raw ``down`` input source value.
-
-        For ``VirtualInput`` sources, this property can also be set.
-        """
-        return self._down.value is True
-
-    @down_source_value.setter
-    def down_source_value(self, value: bool) -> None:
-        """Allow setting the logical down input state for VirtualInputs."""
-        if not isinstance(self._down, VirtualInput):
-            raise TypeError("Only VirtualInput source values can be set manually.")
-        self._down.value = value
-
-    @property
-    def left(self) -> bool:
-        """
-        Get the current, fully processed value of the left input.
-
-        :return: ``True`` if pressed, ``False`` if released.
-        :rtype: bool
-        """
-        return self._left.value != self._active_low
-
-    @property
-    def left_source_value(self) -> bool:
-        """
-        Get the raw ``left`` input source value.
-
-        For ``VirtualInput`` sources, this property can also be set.
-        """
-        return self._left.value is True
-
-    @left_source_value.setter
-    def left_source_value(self, value: bool) -> None:
-        """Allow setting the logical left input state for VirtualInputs."""
-        if not isinstance(self._left, VirtualInput):
-            raise TypeError("Only VirtualInput source values can be set manually.")
-        self._left.value = value
-
-    @property
-    def right(self) -> bool:
-        """
-        Get the current, fully processed value of the right input.
-
-        :return: ``True`` if pressed, ``False`` if released.
-        :rtype: bool
-        """
-        return self._right.value != self._active_low
-
-    @property
-    def right_source_value(self) -> bool:
-        """
-        Get the raw ``right`` input source value.
-
-        For ``VirtualInput`` sources, this property can also be set.
-        """
-        return self._right.value is True
-
-    @right_source_value.setter
-    def right_source_value(self, value: bool) -> None:
-        """Allow setting the logical right input state for VirtualInputs."""
-        if not isinstance(self._right, VirtualInput):
-            raise TypeError("Only VirtualInput source values can be set manually.")
-        self._right.value = value
 
     def __init__(
         self,
@@ -454,36 +350,44 @@ class Hat:
         Provide data source storage and value processing for a hat switch input.
 
         :param up: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-           to ``None``, which will create a ``VirtualInput`` source instead.)
+            to ``None``, which will create a ``VirtualInput`` source instead.)
         :type up: Pin, optional
         :param down: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-           to ``None``, which will create a ``VirtualInput`` source instead.)
+            to ``None``, which will create a ``VirtualInput`` source instead.)
         :type down: Pin, optional
         :param left: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-           to ``None``, which will create a ``VirtualInput`` source instead.)
+            to ``None``, which will create a ``VirtualInput`` source instead.)
         :type left: Pin, optional
         :param right: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-           to ``None``, which will create a ``VirtualInput`` source instead.)
+            to ``None``, which will create a ``VirtualInput`` source instead.)
         :type right: Pin, optional
         :param active_low: Set to ``True`` if the input pins are active low
-           (read ``False`` when buttons are pressed), otherwise set to ``False``.
-           (defaults to ``True``)
+            (read ``False`` when buttons are pressed), otherwise set to ``False``.
+            (defaults to ``True``)
         :type active_low: bool, optional
         """
-        self._up = _initialize_digital_source(up, active_low)
-        self._down = _initialize_digital_source(down, active_low)
-        self._left = _initialize_digital_source(left, active_low)
-        self._right = _initialize_digital_source(right, active_low)
+        self.up = Button(up, active_low)
+        """Button object associated with the ``up`` input."""
+
+        self.down = Button(down, active_low)
+        """Button object associated with the ``down`` input."""
+
+        self.left = Button(left, active_low)
+        """Button object associated with the ``left`` input."""
+
+        self.right = Button(right, active_low)
+        """Button object associated with the ``right`` input."""
+
         self._active_low = active_low
         self._value = Hat.IDLE
         self._update()
 
     def _update(self) -> int:
         """Update the angular position value based on discrete input states."""
-        U = self.up
-        D = self.down
-        L = self.left
-        R = self.right
+        U = self.up.value
+        D = self.down.value
+        L = self.left.value
+        R = self.right.value
 
         if U and R:
             self._value = Hat.UR
