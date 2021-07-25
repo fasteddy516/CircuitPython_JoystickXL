@@ -334,6 +334,20 @@ class Hat:
         return self._update()
 
     @property
+    def packed_source_values(self) -> int:
+        """
+        Get the current packed value of all four button input source values.
+
+        :return: Packed button input source values in one byte (0000RLDU).
+        :rtype: int
+        """
+        pv = self.up.source_value
+        pv |= self.down.source_value << 1
+        pv |= self.left.source_value << 2
+        pv |= self.right.source_value << 3
+        return pv
+
+    @property
     def active_low(self) -> bool:
         """Return ``True`` if the hat switch inputs are set to active low."""
         return self._active_low
