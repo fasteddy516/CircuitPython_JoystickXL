@@ -39,10 +39,13 @@ class Button:
         """
         Get the current, fully processed value of this button input.
 
-        :return: ``True`` if pressed, ``False`` if released.
+        :return: ``True`` if pressed, ``False`` if released or suppressed.
         :rtype: bool
         """
-        return self._source.value != self._active_low
+        self._last_state = self._state
+        self._state = self._source.value != self._active_low
+
+        return self._state and not self.suppress
 
     @property
     def is_pressed(self) -> bool:
@@ -65,6 +68,26 @@ class Button:
         return self._source.value == self._active_low
 
     @property
+    def was_pressed(self) -> bool:
+        """
+        Determine if the button was just pressed.
+
+        :return: ``True`` if the button was just pressed, ``False`` otherwise.
+        :rtype: bool
+        """
+        return self._state is True and self._last_state is False
+
+    @property
+    def was_released(self) -> bool:
+        """
+        Determine if the button was just released.
+
+        :return: ``True`` if the button was just released, ``False`` otherwise.
+        :rtype: bool
+        """
+        return self._state is False and self._last_state is True
+
+    @property
     def source_value(self) -> bool:
         """
         Get the raw source input value.
@@ -85,20 +108,33 @@ class Button:
         """Return ``True`` if the button is configured as active low."""
         return self._active_low
 
-    def __init__(self, source: Pin = None, active_low: bool = True) -> None:
+    def __init__(
+        self,
+        source: Pin = None,
+        active_low: bool = True,
+        suppress: bool = False,
+    ) -> None:
         """
         Provide data source storage and value processing for a button input.
 
         :param source: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-           to ``None``, which will create a ``VirtualInput`` source instead.)
+            to ``None``, which will create a ``VirtualInput`` source instead.)
         :type source: Pin, optional
         :param active_low: Set to ``True`` if the input pin is active low
-           (reads ``False`` when the button is pressed), otherwise set to ``False``.
-           (defaults to ``True``)
+            (reads ``False`` when the button is pressed), otherwise set to ``False``.
+            (defaults to ``True``)
         :type active_low: bool, optional
+        :param suppress: Set to ``True`` to make the button always appear ``released``
+            in USB HID reports back to the host device.  (Defaults to ``False``)
+        :type suppress: bool, optional
         """
         self._source = Button._initialize_source(source, active_low)
         self._active_low = active_low
+        self._state = False
+        self._last_state = False
+
+        self.suppress = suppress
+        """Set to ``True`` to make the button always appear ``released``."""
 
     @staticmethod
     def _initialize_source(
@@ -161,10 +197,15 @@ class Axis:
         """
         Get the current, fully processed value of this axis.
 
-        :return: ``-127`` to ``127``, ``0`` if at rest/centered.
+        :return: ``-127`` to ``127``, ``0`` if at rest/centered or suppressed.
         :rtype: int
         """
-        return self._update()
+        new_value = self._update()
+
+        if self.suppress:
+            return 0
+        else:
+            return new_value
 
     @property
     def source_value(self) -> int:
@@ -210,6 +251,7 @@ class Axis:
         min: int = 0,
         max: int = 65535,
         invert: bool = False,
+        suppress: bool = False,
     ) -> None:
         """
         Provide data source storage and scaling/deadband processing for an axis input.
@@ -238,6 +280,9 @@ class Axis:
            does not match the logical direction of the axis input.
            (defaults to ``False``)
         :type invert: bool, optional
+        :param suppress: Set to ``True`` to make the axis always appear ``centered``
+            in USB HID reports back to the host device.  (Defaults to ``False``)
+        :type suppress: bool, optional
         """
         self._source = Axis._initialize_source(source)
         self._deadband = deadband
@@ -249,6 +294,9 @@ class Axis:
             self._invert = 1
         self._value = 0
         self._last_source_value = 0
+
+        self.suppress = suppress
+        """Set to ``True`` to make the axis always appear ``centered``."""
 
         # calculate raw input midpoint and scaled deadband range
         self._raw_midpoint = self._min + ((self._max - self._min) // 2)
@@ -337,7 +385,7 @@ class Hat:
         """
         Get the current, fully processed value of this hat switch.
 
-        :return: Current position value, as follows:
+        :return: Current position value (always ``IDLE`` if suppressed), as follows:
 
                 * ``0`` = UP
                 * ``1`` = UP + RIGHT
@@ -351,7 +399,12 @@ class Hat:
 
         :rtype: int
         """
-        return self._update()
+        new_value = self._update()
+
+        if self.suppress:
+            return Hat.IDLE
+        else:
+            return new_value
 
     @property
     def packed_source_values(self) -> int:
@@ -379,6 +432,7 @@ class Hat:
         left: Pin = None,
         right: Pin = None,
         active_low: bool = True,
+        suppress: bool = False,
     ) -> None:
         """
         Provide data source storage and value processing for a hat switch input.
@@ -399,6 +453,9 @@ class Hat:
             (read ``False`` when buttons are pressed), otherwise set to ``False``.
             (defaults to ``True``)
         :type active_low: bool, optional
+        :param suppress: Set to ``True`` to make the hat switch always appear ``idle``
+            in USB HID reports back to the host device.  (Defaults to ``False``)
+        :type suppress: bool, optional
         """
         self.up = Button(up, active_low)
         """Button object associated with the ``up`` input."""
@@ -414,6 +471,10 @@ class Hat:
 
         self._active_low = active_low
         self._value = Hat.IDLE
+
+        self.suppress = suppress
+        """Set to ``True`` to make the hat switch always appear ``idle``."""
+
         self._update()
 
     def _update(self) -> int:
