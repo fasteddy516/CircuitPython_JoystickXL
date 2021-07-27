@@ -16,13 +16,15 @@ JoystickXL for CircuitPython
     :target: https://open.vscode.dev/fasteddy516/CircuitPython_JoystickXL
     :alt: Open in Visual Studio Code
 
+**This driver is under active, initial development.  Parts of its functionality
+and API will change over the next few weeks as work on it continues.**
+
 Description
 ===========
 This CircuitPython driver simulates a *really big* USB HID joystick device - up
 to 64 buttons, 8 axes and 4 hat (POV) switches.  If you want to build a custom
 game controller with a lot of inputs - *I'm looking at you, space/flight sim
 pilots and racing sim drivers* - JoystickXL can help.
-
 
 Requirements
 ============
