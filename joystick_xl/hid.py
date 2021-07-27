@@ -39,8 +39,8 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
     if _num_axes < 0 or _num_axes > 8:
         raise ValueError("Axis count must be from 0-8.")
 
-    if _num_buttons < 0 or _num_buttons > 64 or _num_buttons % 8 != 0:
-        raise ValueError("Button count must be from 0-64 and divisible by 8.")
+    if _num_buttons < 0 or _num_buttons > 128 or _num_buttons % 8 != 0:
+        raise ValueError("Button count must be from 0-128 and divisible by 8.")
 
     if _num_hats < 0 or _num_hats > 4 or _num_hats % 2 != 0:
         raise ValueError("Hat count must be from 0-4 and divisible by 2.")
@@ -127,19 +127,6 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
     # fmt: on
 
     # write configuration data to boot.out using 'print'
-    """
-    with open("./config.py", "w") as cf:
-        cf.write("axes = ")
-        cf.write(str(_num_axes))
-        cf.write("\nbuttons = ")
-        cf.write(str(_num_buttons))
-        cf.write("\nhats = ")
-        cf.write(str(_num_hats))
-        cf.write("\nreport_length = ")
-        cf.write(str(_report_length))
-        cf.flush()
-    """
-
     print(
         "JoystickXL",
         __version__,
