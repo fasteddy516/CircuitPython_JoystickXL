@@ -8,15 +8,14 @@ retrieve its input counts, associate input objects and update its input states.
 import struct
 import time
 
-from joystick_xl.inputs import Axis, Button, Hat
-
 # These typing imports help during development in vscode but fail in CircuitPython
 try:
     from typing import Tuple, Union
 except ImportError:
     pass
 
-import usb_hid  # type: ignore (this is a CircuitPython built-in)
+from joystick_xl.hid import _get_device
+from joystick_xl.inputs import Axis, Button, Hat
 
 
 class Joystick:
@@ -34,15 +33,33 @@ class Joystick:
     _report_size = 0
     """The size (in bytes) of USB HID reports for this joystick."""
 
-    @property
-    def num_buttons(self) -> int:
-        """Return the number of available buttons in the USB HID descriptor."""
-        return self._num_buttons
+    # load configuration from ``boot_out.txt``
+    try:
+        with open("/boot_out.txt", "r") as boot_out:
+            for line in boot_out.readlines():
+                if "JoystickXL" in line:
+                    config = [int(s) for s in line.split() if s.isdigit()]
+                    if len(config) < 4:
+                        raise (ValueError)
+                    _num_axes = config[0]
+                    _num_buttons = config[1]
+                    _num_hats = config[2]
+                    _report_size = config[3]
+                    break
+        if _report_size == 0:
+            raise (ValueError)
+    except (OSError, ValueError):
+        raise (Exception("Error loading JoystickXL configuration."))
 
     @property
     def num_axes(self) -> int:
         """Return the number of available axes in the USB HID descriptor."""
         return self._num_axes
+
+    @property
+    def num_buttons(self) -> int:
+        """Return the number of available buttons in the USB HID descriptor."""
+        return self._num_buttons
 
     @property
     def num_hats(self) -> int:
@@ -63,8 +80,7 @@ class Joystick:
            ``boot.py`` before creating a ``Joystick()`` object in ``code.py``,
            otherwise an exception will be thrown.
         """
-        self._load_configuration()
-        self._device = self._find_device()
+        self._device = _get_device()
         self._report = bytearray(self._report_size)
         self._last_report = bytearray(self._report_size)
         self._format = "<"
@@ -80,17 +96,18 @@ class Joystick:
         self.hat = list()
         """List of hat inputs associated with this joystick."""
 
-        self._hat_states = list()
-        for i in range(self.num_hats):
-            self._hat_states.append(8)
-            if (i + 1) % 2 == 0:
-                self._format += "B"
+        self._hat_states = [8] * self.num_hats
+        if self.num_hats > 2:
+            self._format += "H"
+        elif self.num_hats:
+            self._format += "B"
 
         self.button = list()
         """List of button inputs associated with this joystick."""
 
-        self._button_states = 0
-        for _ in range(int(self.num_buttons / 8)):
+        self._button_states = list()
+        for _ in range((self.num_buttons // 8) + bool(self.num_buttons % 8)):
+            self._button_states.append(0)
             self._format += "B"
 
         try:
@@ -98,56 +115,6 @@ class Joystick:
         except OSError:
             time.sleep(1)
             self.reset_all()
-
-    @staticmethod
-    def _load_configuration() -> None:
-        """Load JoystickXL configuration data from ``boot_out.txt``."""
-        try:
-            with open("/boot_out.txt", "r") as boot_out:
-                for line in boot_out.readlines():
-                    if "JoystickXL" in line:
-                        config = [int(s) for s in line.split() if s.isdigit()]
-                        if len(config) < 4:
-                            raise (ValueError)
-                        Joystick._num_axes = config[0]
-                        Joystick._num_buttons = config[1]
-                        Joystick._num_hats = config[2]
-                        Joystick._report_size = config[3]
-                        break
-            if Joystick._report_size == 0:
-                raise (ValueError)
-        except (OSError, ValueError):
-            raise (Exception("Error loading JoystickXL configuration."))
-
-    @staticmethod
-    def _find_device() -> usb_hid.Device:
-        """Find a JoystickXL device in the list of active USB HID devices."""
-        for device in usb_hid.devices:
-            if (
-                device.usage_page == 0x01
-                and device.usage == 0x04
-                and hasattr(device, "send_report")
-            ):
-                return device
-        raise ValueError("Could not find JoystickXL HID device - check boot.py.)")
-
-    @staticmethod
-    def _validate_button_number(button: int) -> bool:
-        """
-        Ensure the supplied button index is valid.
-
-        :param button: The 0-based index of the button to validate.
-        :type button: int
-        :raises ValueError: No buttons are configured for the JoystickXL device.
-        :raises ValueError: The supplied button index is out of range.
-        :return: ``True`` if the supplied button index is valid.
-        :rtype: bool
-        """
-        if Joystick._num_buttons == 0:
-            raise ValueError("There are no buttons configured.")
-        if not 0 <= button <= Joystick._num_buttons - 1:
-            raise ValueError("Specified button is out of range.")
-        return True
 
     @staticmethod
     def _validate_axis_value(axis: int, value: int) -> bool:
@@ -170,6 +137,24 @@ class Joystick:
             raise ValueError("Specified axis is out of range.")
         if not -127 <= value <= 127:
             raise ValueError("Axis value must be in range -127 to 127")
+        return True
+
+    @staticmethod
+    def _validate_button_number(button: int) -> bool:
+        """
+        Ensure the supplied button index is valid.
+
+        :param button: The 0-based index of the button to validate.
+        :type button: int
+        :raises ValueError: No buttons are configured for the JoystickXL device.
+        :raises ValueError: The supplied button index is out of range.
+        :return: ``True`` if the supplied button index is valid.
+        :rtype: bool
+        """
+        if Joystick._num_buttons == 0:
+            raise ValueError("There are no buttons configured.")
+        if not 0 <= button <= Joystick._num_buttons - 1:
+            raise ValueError("Specified button is out of range.")
         return True
 
     @staticmethod
@@ -239,15 +224,15 @@ class Joystick:
            report that was sent out.  Defaults to ``False``.
         :type always: bool, optional
         """
-        # Update button states but defer USB HID report generation.
-        if len(self.button):
-            button_values = [(i, b.value) for i, b in enumerate(self.button)]
-            self.update_button(*button_values, defer=True)
-
         # Update axis values but defer USB HID report generation.
         if len(self.axis):
             axis_values = [(i, a.value) for i, a in enumerate(self.axis)]
             self.update_axis(*axis_values, defer=True)
+
+        # Update button states but defer USB HID report generation.
+        if len(self.button):
+            button_values = [(i, b.value) for i, b in enumerate(self.button)]
+            self.update_button(*button_values, defer=True)
 
         # Update hat switch values, but defer USB HID report generation.
         if len(self.hat):
@@ -259,13 +244,13 @@ class Joystick:
 
         report_data.extend(self._axis_states)
 
-        for i in range(self.num_hats - 1, 0, -2):
-            report_data.append(
-                ((self._hat_states[i - 1] << 4) | (self._hat_states[i])) & 0xFF
-            )
+        if self.num_hats:
+            _hat_state = 0
+            for i in range(self.num_hats):
+                _hat_state |= self._hat_states[i] << (4 * (self.num_hats - i - 1))
+            report_data.append(_hat_state)
 
-        for i in range(self.num_buttons // 8):
-            report_data.append((self._button_states >> (i * 8)) & 0xFF)
+        report_data.extend(self._button_states)
 
         struct.pack_into(self._format, self._report, 0, *report_data)
 
@@ -276,49 +261,13 @@ class Joystick:
 
     def reset_all(self) -> None:
         """Reset all inputs to their resting states."""
-        self._button_states = 0
         for i in range(self.num_axes):
             self._axis_states[i] = 0
+        for i in range(len(self._button_states)):
+            self._button_states[i] = 0
         for i in range(self.num_hats):
             self._hat_states[i] = 8
         self.update(always=True)
-
-    def update_button(
-        self,
-        *button: Tuple[int, int],
-        defer: bool = False,
-    ) -> None:
-        """
-        Update the value of one or more button input(s).
-
-        :param button: One or more tuples containing a button index (0-based) and
-           value (``True`` if pressed, ``False`` if released).
-        :type button: Tuple[int, int]
-        :param defer: When ``True``, prevents sending a USB HID report upon completion.
-           Defaults to ``False``.
-        :type defer: bool
-
-        .. code::
-
-           # Update a single button
-           update_button((0, True))  # 0 = b1
-
-           # Updates multiple buttons
-           update_button((1, False), (7, True))  # 1 = b2, 7 = b8
-
-        .. note::
-
-           ``update_button`` is called automatically for any button objects added to the
-           built in ``Joystick.button[]`` list when ``Joystick.update()`` is called.
-        """
-        for b, value in button:
-            if self._validate_button_number(b):
-                if value:
-                    self._button_states |= 1 << b
-                else:
-                    self._button_states &= ~(1 << b)
-        if not defer:
-            self.update()
 
     def update_axis(
         self,
@@ -351,6 +300,45 @@ class Joystick:
         for a, value in axis:
             if self._validate_axis_value(a, value):
                 self._axis_states[a] = value
+        if not defer:
+            self.update()
+
+    def update_button(
+        self,
+        *button: Tuple[int, int],
+        defer: bool = False,
+    ) -> None:
+        """
+        Update the value of one or more button input(s).
+
+        :param button: One or more tuples containing a button index (0-based) and
+           value (``True`` if pressed, ``False`` if released).
+        :type button: Tuple[int, int]
+        :param defer: When ``True``, prevents sending a USB HID report upon completion.
+           Defaults to ``False``.
+        :type defer: bool
+
+        .. code::
+
+           # Update a single button
+           update_button((0, True))  # 0 = b1
+
+           # Updates multiple buttons
+           update_button((1, False), (7, True))  # 1 = b2, 7 = b8
+
+        .. note::
+
+           ``update_button`` is called automatically for any button objects added to the
+           built in ``Joystick.button[]`` list when ``Joystick.update()`` is called.
+        """
+        for b, value in button:
+            if self._validate_button_number(b):
+                _bank = b // 8
+                _bit = b % 8
+                if value:
+                    self._button_states[_bank] |= 1 << _bit
+                else:
+                    self._button_states[_bank] &= ~(1 << _bit)
         if not defer:
             self.update()
 

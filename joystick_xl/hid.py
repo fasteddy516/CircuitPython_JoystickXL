@@ -10,13 +10,13 @@ import usb_hid  # type: ignore (this is a CircuitPython built-in)
 from joystick_xl import __version__
 
 
-def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.Device:
+def create_joystick(axes: int = 2, buttons: int = 16, hats: int = 0) -> usb_hid.Device:
     """
     Create the ``usb_hid.Device`` required by ``usb_hid.enable()`` in ``boot.py``.
 
-    :param axes: The number of axes to support, from 0 to 8.  (Default is 4)
+    :param axes: The number of axes to support, from 0 to 8.  (Default is 2)
     :type axes: int, optional
-    :param buttons: The number of buttons to support, from 0 to 128.  (Default is 24)
+    :param buttons: The number of buttons to support, from 0 to 128.  (Default is 16)
     :type buttons: int, optional
     :param hats: The number of hat switches to support, from 0 to 4.  (Default is 0)
     :type hats: int, optional
@@ -32,11 +32,11 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
     if _num_axes < 0 or _num_axes > 8:
         raise ValueError("Axis count must be from 0-8.")
 
-    if _num_buttons < 0 or _num_buttons > 128 or _num_buttons % 8 != 0:
-        raise ValueError("Button count must be from 0-128 and divisible by 8.")
+    if _num_buttons < 0 or _num_buttons > 128:
+        raise ValueError("Button count must be from 0-128.")
 
-    if _num_hats < 0 or _num_hats > 4 or _num_hats % 2 != 0:
-        raise ValueError("Hat count must be from 0-4 and divisible by 2.")
+    if _num_hats < 0 or _num_hats > 4:
+        raise ValueError("Hat count must be from 0-4.")
 
     _report_length = 0
 
@@ -51,7 +51,7 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
         0x85, 0xFF,                         # :   REPORT_ID (Set at runtime, index=7)
     ))
 
-    if _num_axes > 0:
+    if _num_axes:
         for i in range(_num_axes):
             _descriptor.extend(bytes((
                 0x09, min(0x30 + i, 0x36)   # :     USAGE (X,Y,Z,Rx,Ry,Rz,S0,S1)
@@ -67,7 +67,7 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
 
         _report_length = _num_axes
 
-    if _num_hats > 0:
+    if _num_hats:
         for i in range(_num_hats):
             _descriptor.extend(bytes((
                 0x09, 0x39,                 # :     USAGE (Hat switch)
@@ -84,11 +84,17 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
             0x81, 0x42,                     # :     INPUT (Data,Var,Abs,Null)
         )))
 
-        _report_length += int(_num_hats / 2)
+        _hat_pad = _num_hats % 2
+        if _hat_pad:
+            _descriptor.extend(bytes((
+                0x75, 0x04,                 # :     REPORT_SIZE (4)
+                0x95, _hat_pad,             # :     REPORT_COUNT (_hat_pad)
+                0x81, 0x03,                 # :     INPUT (Cnst,Var,Abs)
+            )))
 
-    # *** padding bits may need to be inserted here ***
+        _report_length += ((_num_hats // 2) + bool(_hat_pad))
 
-    if _num_buttons > 0:
+    if _num_buttons:
         _descriptor.extend(bytes((
             0x05, 0x09,                     # :     USAGE_PAGE (Button)
             0x19, 0x01,                     # :     USAGE_MINIMUM (Button 1)
@@ -100,9 +106,15 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
             0x81, 0x02,                     # :     INPUT (Data,Var,Abs)
         )))
 
-        _report_length += int(_num_buttons / 8)
+        _button_pad = _num_buttons % 8
+        if _button_pad:
+            _descriptor.extend(bytes((
+                0x75, 0x01,                 # :     REPORT_SIZE (1)
+                0x95, 8 - _button_pad,      # :     REPORT_COUNT (_button_pad)
+                0x81, 0x03,                 # :     INPUT (Cnst,Var,Abs)
+            )))
 
-    # *** padding bits may need to be inserted here ***
+        _report_length += ((_num_buttons // 8) + bool(_button_pad))
 
     _descriptor.extend(bytes((
         0xC0,                               # : END_COLLECTION
@@ -132,3 +144,15 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
         out_report_length=0,  # length (in bytes) of reports from host
         report_id_index=7,  # 0-based byte position of report id index in descriptor
     )
+
+
+def _get_device() -> usb_hid.Device:
+    """Find a JoystickXL device in the list of active USB HID devices."""
+    for device in usb_hid.devices:
+        if (
+            device.usage_page == 0x01
+            and device.usage == 0x04
+            and hasattr(device, "send_report")
+        ):
+            return device
+    raise ValueError("Could not find JoystickXL HID device - check boot.py.)")
