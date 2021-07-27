@@ -116,12 +116,12 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
             0x75, 0x04,                     # :     REPORT_SIZE (4)
             0x95, _num_hats,                # :     REPORT_COUNT (num_hats)
             0x81, 0x42,                     # :     INPUT (Data,Var,Abs,Null)
+            0xC0,                           # :   END_COLLECTION
         )))
 
         _report_length += int(_num_hats / 2)
 
     _descriptor.extend(bytes((
-        0xC0,                               # :   END_COLLECTION
         0xC0,                               # : END_COLLECTION
     )))
     # fmt: on
