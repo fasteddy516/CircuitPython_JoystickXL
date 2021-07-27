@@ -69,13 +69,6 @@ class Joystick:
         self._last_report = bytearray(self._report_size)
         self._format = "<"
 
-        self.button = list()
-        """List of button inputs associated with this joystick."""
-
-        self._button_states = 0
-        for _ in range(int(self.num_buttons / 8)):
-            self._format += "B"
-
         self.axis = list()
         """List of axis inputs associated with this joystick."""
 
@@ -92,6 +85,13 @@ class Joystick:
             self._hat_states.append(8)
             if (i + 1) % 2 == 0:
                 self._format += "B"
+
+        self.button = list()
+        """List of button inputs associated with this joystick."""
+
+        self._button_states = 0
+        for _ in range(int(self.num_buttons / 8)):
+            self._format += "B"
 
         try:
             self.reset_all()
@@ -257,15 +257,15 @@ class Joystick:
         # Generate a USB HID report.
         report_data = list()
 
-        for i in range(self.num_buttons // 8):
-            report_data.append((self._button_states >> (i * 8)) & 0xFF)
-
         report_data.extend(self._axis_states)
 
         for i in range(self.num_hats - 1, 0, -2):
             report_data.append(
                 ((self._hat_states[i - 1] << 4) | (self._hat_states[i])) & 0xFF
             )
+
+        for i in range(self.num_buttons // 8):
+            report_data.append((self._button_states >> (i * 8)) & 0xFF)
 
         struct.pack_into(self._format, self._report, 0, *report_data)
 
