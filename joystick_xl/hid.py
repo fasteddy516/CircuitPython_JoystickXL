@@ -28,13 +28,6 @@ def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.
     _num_buttons = buttons
     _num_hats = hats
 
-    # reduce button count on platforms that don't handle 64-bit integers
-    if _num_buttons > 24:
-        try:
-            i = 2 ** _num_buttons  # if this fails, the platform won't do 64-bit values
-        except OverflowError:
-            _num_buttons = 24
-
     # Validate the number of configured axes, buttons and hats.
     if _num_axes < 0 or _num_axes > 8:
         raise ValueError("Axis count must be from 0-8.")

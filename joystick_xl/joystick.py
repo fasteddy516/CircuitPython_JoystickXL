@@ -34,13 +34,6 @@ class Joystick:
     _report_size = 0
     """The size (in bytes) of USB HID reports for this joystick."""
 
-    # reduce button count on platforms that don't handle 64-bit integers
-    if _num_buttons > 24:
-        try:
-            i = 2 ** _num_buttons  # if this fails, the platform won't do 64-bit values
-        except OverflowError:
-            _num_buttons = 24
-
     @property
     def num_buttons(self) -> int:
         """Return the number of available buttons in the USB HID descriptor."""
