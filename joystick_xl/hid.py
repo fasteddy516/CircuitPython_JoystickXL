@@ -7,26 +7,26 @@ with a descriptor that includes the configured type and quantity of inputs.
 
 import usb_hid  # type: ignore (this is a CircuitPython built-in)
 
+from joystick_xl import __version__
 
-def create_joystick() -> usb_hid.Device:
+
+def create_joystick(axes: int = 4, buttons: int = 24, hats: int = 0) -> usb_hid.Device:
     """
     Create the ``usb_hid.Device`` required by ``usb_hid.enable()`` in ``boot.py``.
 
+    :param axes: The number of axes to support, from 0 to 8.  (Default is 4)
+    :type axes: int, optional
+    :param buttons: The number of buttons to support, from 0 to 128.  (Default is 24)
+    :type buttons: int, optional
+    :param hats: The number of hat switches to support, from 0 to 4.  (Default is 0)
+    :type hats: int, optional
     :return: A ``usb_hid.Device`` object with a descriptor identifying it as a joystick
         with the specified number of buttons, axes and hat switches.
     :rtype: ``usb_hid.Device``
     """
-    # Use custom input count configuration if it exists, otherwise use defaults.
-    try:
-        from . import config  # type: ignore (config file is optional and may not exist)
-
-        _num_buttons = config.buttons
-        _num_axes = config.axes
-        _num_hats = config.hats
-    except (ImportError, AttributeError):
-        _num_buttons = 64
-        _num_axes = 8
-        _num_hats = 4
+    _num_axes = axes
+    _num_buttons = buttons
+    _num_hats = hats
 
     # reduce button count on platforms that don't handle 64-bit integers
     if _num_buttons > 24:
@@ -35,12 +35,12 @@ def create_joystick() -> usb_hid.Device:
         except OverflowError:
             _num_buttons = 24
 
-    # Validate the number of configured buttons, axes and hats.
-    if _num_buttons < 0 or _num_buttons > 64 or _num_buttons % 8 != 0:
-        raise ValueError("Button count must be from 0-64 and divisible by 8.")
-
+    # Validate the number of configured axes, buttons and hats.
     if _num_axes < 0 or _num_axes > 8:
         raise ValueError("Axis count must be from 0-8.")
+
+    if _num_buttons < 0 or _num_buttons > 64 or _num_buttons % 8 != 0:
+        raise ValueError("Button count must be from 0-64 and divisible by 8.")
 
     if _num_hats < 0 or _num_hats > 4 or _num_hats % 2 != 0:
         raise ValueError("Hat count must be from 0-4 and divisible by 2.")
@@ -125,6 +125,34 @@ def create_joystick() -> usb_hid.Device:
         0xC0,                               # : END_COLLECTION
     )))
     # fmt: on
+
+    # write configuration data to boot.out using 'print'
+    """
+    with open("./config.py", "w") as cf:
+        cf.write("axes = ")
+        cf.write(str(_num_axes))
+        cf.write("\nbuttons = ")
+        cf.write(str(_num_buttons))
+        cf.write("\nhats = ")
+        cf.write(str(_num_hats))
+        cf.write("\nreport_length = ")
+        cf.write(str(_report_length))
+        cf.flush()
+    """
+
+    print(
+        "JoystickXL",
+        __version__,
+        "(",
+        _num_axes,
+        "axes,",
+        _num_buttons,
+        "buttons,",
+        _num_hats,
+        "hats,",
+        _report_length,
+        "report bytes )",
+    )
 
     return usb_hid.Device(
         report_descriptor=bytes(_descriptor),

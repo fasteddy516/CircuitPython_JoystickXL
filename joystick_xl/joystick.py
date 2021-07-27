@@ -22,17 +22,17 @@ import usb_hid  # type: ignore (this is a CircuitPython built-in)
 class Joystick:
     """Base JoystickXL class for updating input states and sending USB HID reports."""
 
-    # Use custom input count configuration if it exists, otherwise use defaults.
-    try:
-        from . import config  # type: ignore (config file is optional and may not exist)
+    _num_axes = 0
+    """The number of axes this joystick can support."""
 
-        _num_buttons = config.buttons
-        _num_axes = config.axes
-        _num_hats = config.hats
-    except (ImportError, AttributeError):
-        _num_buttons = 64
-        _num_axes = 8
-        _num_hats = 4
+    _num_buttons = 0
+    """The number of buttons this joystick can support."""
+
+    _num_hats = 0
+    """The number of hat switches this joystick can support."""
+
+    _report_size = 0
+    """The size (in bytes) of USB HID reports for this joystick."""
 
     # reduce button count on platforms that don't handle 64-bit integers
     if _num_buttons > 24:
@@ -56,11 +56,6 @@ class Joystick:
         """Return the number of available hat switches in the USB HID descriptor."""
         return self._num_hats
 
-    @property
-    def _report_size(self) -> int:
-        """Return the length (in bytes) of an outgoing USB HID report."""
-        return self.num_buttons // 8 + self.num_axes + self.num_hats // 2
-
     def __init__(self) -> None:
         """
         Create a JoystickXL object with all inputs at rest.
@@ -75,6 +70,7 @@ class Joystick:
            ``boot.py`` before creating a ``Joystick()`` object in ``code.py``,
            otherwise an exception will be thrown.
         """
+        self._load_configuration()
         self._device = self._find_device()
         self._report = bytearray(self._report_size)
         self._last_report = bytearray(self._report_size)
@@ -109,6 +105,26 @@ class Joystick:
         except OSError:
             time.sleep(1)
             self.reset_all()
+
+    @staticmethod
+    def _load_configuration() -> None:
+        """Load JoystickXL configuration data from ``boot_out.txt``."""
+        try:
+            with open("/boot_out.txt", "r") as boot_out:
+                for line in boot_out.readlines():
+                    if "JoystickXL" in line:
+                        config = [int(s) for s in line.split() if s.isdigit()]
+                        if len(config) < 4:
+                            raise (ValueError)
+                        Joystick._num_axes = config[0]
+                        Joystick._num_buttons = config[1]
+                        Joystick._num_hats = config[2]
+                        Joystick._report_size = config[3]
+                        break
+            if Joystick._report_size == 0:
+                raise (ValueError)
+        except (OSError, ValueError):
+            raise (Exception("Error loading JoystickXL configuration."))
 
     @staticmethod
     def _find_device() -> usb_hid.Device:
