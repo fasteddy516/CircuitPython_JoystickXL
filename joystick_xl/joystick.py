@@ -90,13 +90,13 @@ class Joystick:
 
         self._axis_states = list()
         for _ in range(self.num_axes):
-            self._axis_states.append(0)
-            self._format += "b"
+            self._axis_states.append(Axis.IDLE)
+            self._format += "B"
 
         self.hat = list()
         """List of hat inputs associated with this joystick."""
 
-        self._hat_states = [8] * self.num_hats
+        self._hat_states = [Hat.IDLE] * self.num_hats
         if self.num_hats > 2:
             self._format += "H"
         elif self.num_hats:
@@ -135,8 +135,8 @@ class Joystick:
             raise ValueError("There are no axes configured.")
         if axis + 1 > Joystick._num_axes:
             raise ValueError("Specified axis is out of range.")
-        if not -127 <= value <= 127:
-            raise ValueError("Axis value must be in range -127 to 127")
+        if not Axis.MIN <= value <= Axis.MAX:
+            raise ValueError("Axis value must be in range 0 to 255")
         return True
 
     @staticmethod
@@ -262,11 +262,11 @@ class Joystick:
     def reset_all(self) -> None:
         """Reset all inputs to their resting states."""
         for i in range(self.num_axes):
-            self._axis_states[i] = 0
+            self._axis_states[i] = Axis.IDLE
         for i in range(len(self._button_states)):
             self._button_states[i] = 0
         for i in range(self.num_hats):
-            self._hat_states[i] = 8
+            self._hat_states[i] = Hat.IDLE
         self.update(always=True)
 
     def update_axis(
@@ -278,7 +278,7 @@ class Joystick:
         Update the value of one or more axis input(s).
 
         :param axis: One or more tuples containing an axis index (0-based) and value
-           (``-127`` to ``127``, with ``0`` indicating the axis is at rest/centered).
+           (``0`` to ``255``, with ``128`` indicating the axis is at rest/centered).
         :type axis: Tuple[int, int]
         :param defer: When ``True``, prevents sending a USB HID report upon completion.
            Defaults to ``False``.
@@ -287,10 +287,10 @@ class Joystick:
         .. code::
 
            # Updates a single axis
-           update_axis((0, -121))  # 0 = x-axis
+           update_axis((0, 42))  # 0 = x-axis
 
            # Updates multiple axes
-           update_axis((1, 22), (3, -42))  # 1 = y-axis, 3 = rx-axis
+           update_axis((1, 22), (3, 237))  # 1 = y-axis, 3 = rx-axis
 
         .. note::
 

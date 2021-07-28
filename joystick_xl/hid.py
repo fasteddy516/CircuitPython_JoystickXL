@@ -58,8 +58,8 @@ def create_joystick(axes: int = 2, buttons: int = 16, hats: int = 0) -> usb_hid.
             )))
 
         _descriptor.extend(bytes((
-            0x15, 0x81,                     # :     LOGICAL_MINIMUM (-127)
-            0x25, 0x7F,                     # :     LOGICAL_MAXIMUM (127)
+            0x15, 0x00,                     # :     LOGICAL_MINIMUM (0)
+            0x26, 0xFF, 0x00,               # :     LOGICAL_MAXIMUM (255)
             0x75, 0x08,                     # :     REPORT_SIZE (8)
             0x95, _num_axes,                # :     REPORT_COUNT (num_axes)
             0x81, 0x02,                     # :     INPUT (Data,Var,Abs)
@@ -123,17 +123,17 @@ def create_joystick(axes: int = 2, buttons: int = 16, hats: int = 0) -> usb_hid.
 
     # write configuration data to boot.out using 'print'
     print(
-        "JoystickXL",
+        "+ Enabled JoystickXL",
         __version__,
-        "(",
+        "with",
         _num_axes,
         "axes,",
         _num_buttons,
-        "buttons,",
+        "buttons and",
         _num_hats,
-        "hats,",
+        "hats for a total of",
         _report_length,
-        "report bytes )",
+        "report bytes.",
     )
 
     return usb_hid.Device(
