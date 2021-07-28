@@ -33,24 +33,6 @@ class Joystick:
     _report_size = 0
     """The size (in bytes) of USB HID reports for this joystick."""
 
-    # load configuration from ``boot_out.txt``
-    try:
-        with open("/boot_out.txt", "r") as boot_out:
-            for line in boot_out.readlines():
-                if "JoystickXL" in line:
-                    config = [int(s) for s in line.split() if s.isdigit()]
-                    if len(config) < 4:
-                        raise (ValueError)
-                    _num_axes = config[0]
-                    _num_buttons = config[1]
-                    _num_hats = config[2]
-                    _report_size = config[3]
-                    break
-        if _report_size == 0:
-            raise (ValueError)
-    except (OSError, ValueError):
-        raise (Exception("Error loading JoystickXL configuration."))
-
     @property
     def num_axes(self) -> int:
         """Return the number of available axes in the USB HID descriptor."""
@@ -80,6 +62,24 @@ class Joystick:
            ``boot.py`` before creating a ``Joystick()`` object in ``code.py``,
            otherwise an exception will be thrown.
         """
+        # load configuration from ``boot_out.txt``
+        try:
+            with open("/boot_out.txt", "r") as boot_out:
+                for line in boot_out.readlines():
+                    if "JoystickXL" in line:
+                        config = [int(s) for s in line.split() if s.isdigit()]
+                        if len(config) < 4:
+                            raise (ValueError)
+                        Joystick._num_axes = config[0]
+                        Joystick._num_buttons = config[1]
+                        Joystick._num_hats = config[2]
+                        Joystick._report_size = config[3]
+                        break
+            if Joystick._report_size == 0:
+                raise (ValueError)
+        except (OSError, ValueError):
+            raise (Exception("Error loading JoystickXL configuration."))
+
         self._device = _get_device()
         self._report = bytearray(self._report_size)
         self._last_report = bytearray(self._report_size)
