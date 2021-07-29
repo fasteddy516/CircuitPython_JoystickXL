@@ -107,9 +107,14 @@ Using JoystickXL
 
 Testing JoystickXL Devices
 ==========================
-JoystickXL has a built-in testing module that can be run right from the
-CircuitPython REPL to verify compatibility with an operating system, game or
-application - *no input wiring or code.py required!*
+Not all platforms/games/applications support joystick devices with high input
+counts.  **Before you spend any time writing code or building hardware for a
+custom controller, you should make sure the software that you want to use it
+with is compatible.**
+
+Fortunately, JoystickXL has a built-in testing module that can be run right
+from the CircuitPython REPL to verify compatibility with an operating system,
+game or application - *no input wiring or code.py required!*  
 
 See the
 `compatibility and testing documentation <https://circuitpython-joystickxl.readthedocs.io/en/latest/start.html#verifying-compatibility>`_
@@ -128,6 +133,10 @@ Acknowledgements
 A massive thanks to Adafruit and the entire CircuitPython team for creating and
 constantly improving the CircuitPython ecosystem.  
 
+Frank Zhao's 
+`Tutorial about USB HID Report Descriptors <https://eleccelerator.com/tutorial-about-usb-hid-report-descriptors/>`_
+was the starting point for my journey into USB HID land.
+
 The tools and documentation provided by the `USB Implementors Forum <https://www.usb.org/>`_
 were an excellent resource, especially in regards to the creation of the
 required USB HID descriptor.  The following resources were particularly useful:
@@ -135,3 +144,4 @@ required USB HID descriptor.  The following resources were particularly useful:
 * `HID Descriptor Tool <https://www.usb.org/document-library/hid-descriptor-tool>`_
 * `Device Class Definition for HID <https://www.usb.org/document-library/device-class-definition-hid-111>`_
 * `HID Usage Tables <https://www.usb.org/document-library/hid-usage-tables-122>`_
+
