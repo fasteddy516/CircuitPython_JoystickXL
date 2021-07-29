@@ -50,7 +50,7 @@ class Joystick:
 
     def __init__(self) -> None:
         """
-        Create a JoystickXL object with all inputs at rest.
+        Create a JoystickXL object with all inputs in idle states.
 
         .. code::
 
@@ -86,7 +86,7 @@ class Joystick:
         self._format = "<"
 
         self.axis = list()
-        """List of axis inputs associated with this joystick."""
+        """List of axis inputs associated with this joystick through ``add_input``."""
 
         self._axis_states = list()
         for _ in range(self.num_axes):
@@ -94,7 +94,7 @@ class Joystick:
             self._format += "B"
 
         self.hat = list()
-        """List of hat inputs associated with this joystick."""
+        """List of hat inputs associated with this joystick through ``add_input``."""
 
         self._hat_states = [Hat.IDLE] * self.num_hats
         if self.num_hats > 2:
@@ -103,7 +103,7 @@ class Joystick:
             self._format += "B"
 
         self.button = list()
-        """List of button inputs associated with this joystick."""
+        """List of button inputs associated with this joystick through ``add_input``."""
 
         self._button_states = list()
         for _ in range((self.num_buttons // 8) + bool(self.num_buttons % 8)):
@@ -187,11 +187,11 @@ class Joystick:
         The provided input(s) are automatically added to the ``axis``, ``button`` and
         ``hat`` lists based on their type.  The order in which inputs are added will
         determine their index/reference number. (i.e., the first button object that is
-        added will be ``Joystick.button[0]`` and will correspond to ``Button 1`` on
-        the host device.)  Inputs of all types can be added at the same time.
+        added will be ``Joystick.button[0]``.)  Inputs of all types can be added at the
+        same time and will be sorted into the correct list.
 
         :param input: One or more ``Axis``, ``Button`` or ``Hat`` objects.
-        :type input: Union[Axis, Button, Hat]
+        :type input: Axis, Button, or Hat
         :raises TypeError: If an object that is not an ``Axis``, ``Button`` or ``Hat``
             is passed in.
         :raises OverflowError: If an attempt is made to add more than the available
@@ -227,17 +227,17 @@ class Joystick:
         # Update axis values but defer USB HID report generation.
         if len(self.axis):
             axis_values = [(i, a.value) for i, a in enumerate(self.axis)]
-            self.update_axis(*axis_values, defer=True)
+            self.update_axis(*axis_values, defer=True, skip_validation=True)
 
         # Update button states but defer USB HID report generation.
         if len(self.button):
             button_values = [(i, b.value) for i, b in enumerate(self.button)]
-            self.update_button(*button_values, defer=True)
+            self.update_button(*button_values, defer=True, skip_validation=True)
 
         # Update hat switch values, but defer USB HID report generation.
         if len(self.hat):
             hat_values = [(i, h.value) for i, h in enumerate(self.hat)]
-            self.update_hat(*hat_values, defer=True)
+            self.update_hat(*hat_values, defer=True, skip_validation=True)
 
         # Generate a USB HID report.
         report_data = list()
@@ -260,7 +260,7 @@ class Joystick:
             self._last_report[:] = self._report
 
     def reset_all(self) -> None:
-        """Reset all inputs to their resting states."""
+        """Reset all inputs to their idle states."""
         for i in range(self.num_axes):
             self._axis_states[i] = Axis.IDLE
         for i in range(len(self._button_states)):
@@ -273,16 +273,22 @@ class Joystick:
         self,
         *axis: Tuple[int, int],
         defer: bool = False,
+        skip_validation: bool = False,
     ) -> None:
         """
         Update the value of one or more axis input(s).
 
         :param axis: One or more tuples containing an axis index (0-based) and value
-           (``0`` to ``255``, with ``128`` indicating the axis is at rest/centered).
+           (``0`` to ``255``, with ``128`` indicating the axis is idle/centered).
         :type axis: Tuple[int, int]
         :param defer: When ``True``, prevents sending a USB HID report upon completion.
            Defaults to ``False``.
         :type defer: bool
+        :param skip_validation: When ``True``, bypasses the normal input number/value
+           validation that occurs before they get processed.  This is used for *known
+           good values* that are generated using the ``Joystick.axis[]``,
+           ``Joystick.button[]`` and ``Joystick.hat[]`` lists.  Defaults to ``False``.
+        :type skip_validation: bool
 
         .. code::
 
@@ -298,7 +304,7 @@ class Joystick:
            built in ``Joystick.axis[]`` list when ``Joystick.update()`` is called.
         """
         for a, value in axis:
-            if self._validate_axis_value(a, value):
+            if skip_validation or self._validate_axis_value(a, value):
                 self._axis_states[a] = value
         if not defer:
             self.update()
@@ -307,6 +313,7 @@ class Joystick:
         self,
         *button: Tuple[int, int],
         defer: bool = False,
+        skip_validation: bool = False,
     ) -> None:
         """
         Update the value of one or more button input(s).
@@ -317,6 +324,11 @@ class Joystick:
         :param defer: When ``True``, prevents sending a USB HID report upon completion.
            Defaults to ``False``.
         :type defer: bool
+        :param skip_validation: When ``True``, bypasses the normal input number/value
+           validation that occurs before they get processed.  This is used for *known
+           good values* that are generated using the ``Joystick.axis[]``,
+           ``Joystick.button[]`` and ``Joystick.hat[]`` lists.  Defaults to ``False``.
+        :type skip_validation: bool
 
         .. code::
 
@@ -332,7 +344,7 @@ class Joystick:
            built in ``Joystick.button[]`` list when ``Joystick.update()`` is called.
         """
         for b, value in button:
-            if self._validate_button_number(b):
+            if skip_validation or self._validate_button_number(b):
                 _bank = b // 8
                 _bit = b % 8
                 if value:
@@ -346,6 +358,7 @@ class Joystick:
         self,
         *hat: Tuple[int, int],
         defer: bool = False,
+        skip_validation: bool = False,
     ) -> None:
         """
         Update the value of one or more hat switch input(s).
@@ -367,6 +380,11 @@ class Joystick:
         :param defer: When ``True``, prevents sending a USB HID report upon completion.
            Defaults to ``False``.
         :type defer: bool
+        :param skip_validation: When ``True``, bypasses the normal input number/value
+           validation that occurs before they get processed.  This is used for *known
+           good values* that are generated using the ``Joystick.axis[]``,
+           ``Joystick.button[]`` and ``Joystick.hat[]`` lists.  Defaults to ``False``.
+        :type skip_validation: bool
 
         .. code::
 
@@ -382,7 +400,7 @@ class Joystick:
            the built in ``Joystick.hat[]`` list when ``Joystick.update()`` is called.
         """
         for h, value in hat:
-            if self._validate_hat_value(h, value):
+            if skip_validation or self._validate_hat_value(h, value):
                 self._hat_states[h] = value
         if not defer:
             self.update()
