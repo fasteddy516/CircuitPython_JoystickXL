@@ -130,3 +130,8 @@ dmypy.json
 
 # CircuitPython/MicroPython pre-compiled code
 *.mpy
+
+# Visual Studio Code 
+.vscode/
+*.code-workspace
+.history/
