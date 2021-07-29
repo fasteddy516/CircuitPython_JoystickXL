@@ -10,15 +10,15 @@ import usb_hid  # type: ignore (this is a CircuitPython built-in)
 from joystick_xl import __version__
 
 
-def create_joystick(axes: int = 2, buttons: int = 16, hats: int = 0) -> usb_hid.Device:
+def create_joystick(axes: int = 4, buttons: int = 16, hats: int = 1) -> usb_hid.Device:
     """
     Create the ``usb_hid.Device`` required by ``usb_hid.enable()`` in ``boot.py``.
 
-    :param axes: The number of axes to support, from 0 to 8.  (Default is 2)
+    :param axes: The number of axes to support, from 0 to 8.  (Default is 4)
     :type axes: int, optional
     :param buttons: The number of buttons to support, from 0 to 128.  (Default is 16)
     :type buttons: int, optional
-    :param hats: The number of hat switches to support, from 0 to 4.  (Default is 0)
+    :param hats: The number of hat switches to support, from 0 to 4.  (Default is 1)
     :type hats: int, optional
     :return: A ``usb_hid.Device`` object with a descriptor identifying it as a joystick
         with the specified number of buttons, axes and hat switches.
