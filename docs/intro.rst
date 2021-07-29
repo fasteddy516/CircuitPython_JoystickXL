@@ -16,8 +16,6 @@ JoystickXL for CircuitPython
     :target: https://open.vscode.dev/fasteddy516/CircuitPython_JoystickXL
     :alt: Open in Visual Studio Code
 
-**This driver is under active, initial development.  Parts of its functionality
-and API will change over the next few weeks as work on it continues.**
 
 Description
 ===========
@@ -25,6 +23,9 @@ This CircuitPython driver simulates a *really big* USB HID joystick device - up
 to 128 buttons, 8 axes and 4 hat (POV) switches.  If you want to build a custom
 game controller with a lot of inputs - *I'm looking at you, space/flight sim
 pilots and racing sim drivers* - JoystickXL can help.
+
+**Head over to the** :doc:`Getting Started </start>` **section to dive in!**
+
 
 Requirements
 ============
@@ -49,78 +50,6 @@ Host OS Compatibility
 * **Mac:** Currently untested.
 
 
-Documentation
-=============
-Full documentation is available at `<https://circuitpython-joystickxl.readthedocs.org>`_.
-
-
-Installation
-============
-1. Download the `latest release of JoystickXL <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>`_.
-2. Extract the files from the downloaded .zip archive.
-3. Copy the ``joystick_xl`` folder to the ``lib`` folder on your device's
-   ``CIRCUITPY`` drive.
-
-For additional information on installing libraries, see Adafruit's
-`Welcome to CircuitPython Guide <https://learn.adafruit.com/welcome-to-circuitpython/circuitpython-libraries>`_.
-
-
-Using JoystickXL
-================
-1. Create/modify ``boot.py`` on your CircuitPython device to enable the
-   required custom USB HID device.
-
-   .. code:: python
-
-      """boot.py"""
-      import usb_hid
-      from joystick_xl.hid import create_joystick
-
-      usb_hid.enable((create_joystick(axes=2, buttons=2, hats=1)),)
-
-2. Use JoystickXL in ``code.py`` like this:
-
-   .. code:: python
-     
-      """code.py"""
-      import board
-      from joystick_xl.inputs import Axis, Button, Hat
-      from joystick_xl.joystick import Joystick
-   
-      js = Joystick()
-   
-      js.add_input(
-          Button(board.D9),
-          Button(board.D10),
-          Axis(board.A2),
-          Axis(board.A3),
-          Hat(up=board.D2, down=board.D3, left=board.D4, right=board.D7),
-      )
-
-      while True:
-          js.update()
-
-   See the `examples <https://circuitpython-joystickxl.readthedocs.io/en/latest/examples.html>`_
-   and `API documentation <https://circuitpython-joystickxl.readthedocs.io/en/latest/api.html>`_
-   for more information.
-
-
-Testing JoystickXL Devices
-==========================
-Not all platforms/games/applications support joystick devices with high input
-counts.  **Before you spend any time writing code or building hardware for a
-custom controller, you should make sure the software that you want to use it
-with is compatible.**
-
-Fortunately, JoystickXL has a built-in testing module that can be run right
-from the CircuitPython Serial Console/REPL to verify compatibility with an
-operating system, game or application - *no input wiring or code.py required!*
-
-See the
-`compatibility and testing documentation <https://circuitpython-joystickxl.readthedocs.io/en/latest/start.html#verifying-compatibility>`_
-for more information.
-
-
 Contributing
 ============
 If you have questions, problems, feature requests, etc. please post them to the 
@@ -133,10 +62,6 @@ Acknowledgements
 A massive thanks to Adafruit and the entire CircuitPython team for creating and
 constantly improving the CircuitPython ecosystem.  
 
-Frank Zhao's 
-`Tutorial about USB HID Report Descriptors <https://eleccelerator.com/tutorial-about-usb-hid-report-descriptors/>`_
-was the starting point for my journey into USB HID land.
-
 The tools and documentation provided by the `USB Implementors Forum <https://www.usb.org/>`_
 were an excellent resource, especially in regards to the creation of the
 required USB HID descriptor.  The following resources were particularly useful:
@@ -144,4 +69,3 @@ required USB HID descriptor.  The following resources were particularly useful:
 * `HID Descriptor Tool <https://www.usb.org/document-library/hid-descriptor-tool>`_
 * `Device Class Definition for HID <https://www.usb.org/document-library/device-class-definition-hid-111>`_
 * `HID Usage Tables <https://www.usb.org/document-library/hid-usage-tables-122>`_
-

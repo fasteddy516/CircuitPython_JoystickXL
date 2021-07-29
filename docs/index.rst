@@ -2,7 +2,13 @@
    :caption: Introduction
    :hidden:
 
-   readme
+   intro
+   
+.. toctree::
+   :caption: Getting Started
+   :hidden:
+
+   start
 
 .. toctree::
    :caption: Examples
@@ -24,4 +30,4 @@
    Source <https://github.com/fasteddy516/CircuitPython_JoystickXL>
    Latest Release <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>
 
-.. include:: ../README.rst
+.. include:: ./intro.rst
