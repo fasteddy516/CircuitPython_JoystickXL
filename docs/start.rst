@@ -146,19 +146,45 @@ in-game.
     application you want to test it with on your host.  If you start the
     application on the host first, it may not detect the joystick.
 
+.. seealso::
+    
+    **Joystick Testing Applications**
 
-Testing Tools
-=============
-The best testing application I have found for Windows is 
-`Pointy's Joystick Test Application <http://www.planetpointy.co.uk/joystick-test-application/>`_
-which accurately shows the status of the entire set of inputs.  (Note that it relies on
-Microsoft's DirectInput, so you may need to install the 
-`Microsoft DirectX End-User Runtimes <https://www.microsoft.com/en-ca/download/details.aspx?id=8109>`_
-in order to get the application to run.)
+    * *(Windows)* `Pointy's Joystick Test Application <http://www.planetpointy.co.uk/joystick-test-application/>`_ (requires the `Microsoft DirectX End-User Runtimes <https://www.microsoft.com/en-ca/download/details.aspx?id=8109>`_)
+    * *(Browser-based)* `gamepad-tester.com <https://gamepad-tester.com/>`_ (Works with up to 6 axes, 32 buttons and 1 hat switch.)
+    * *(Linux)* `jstest <https://linux.die.net/man/1/jstest>`_ (Part of the ``joystick`` package - works with up to 7 axes, 80 buttons, no hat switches)
 
-There is also a web-based test application at
-`gamepad-tester.com <https://gamepad-tester.com/>`_
-that works well with up to 6 axes, 32 buttons and 1 hat switch.  
+What Next?
+==========
 
-I have done very little testing on Linux platforms, but the little bit I've
-done has been using ``jstest`` on a Raspberry Pi command line.
+With your configuration in ``boot.py`` complete, and compatibility with your
+desired host application confirmed, you're ready to start building and coding!
+
+The *building* part is up to your skills and imagination (and beyond the scope
+of this documentation).  Adafruit has some excellent CircuitPython-specific 
+guides that can help with the wiring part:
+
+* For Buttons/Hat Switches - `CircuitPython Digital In & Out <https://learn.adafruit.com/circuitpython-essentials/circuitpython-digital-in-out>`_
+* For Axes - `CircuitPython Analog In <https://learn.adafruit.com/circuitpython-essentials/circuitpython-analog-in>`_
+
+(Don't worry so much about the code parts in those guides - JoystickXL handles
+configuration and processing for standard analog/digital inputs for you -
+although it doesn't hurt to know what's going on under the hood!)
+
+Adafruit also carries some excellent
+`button <https://www.adafruit.com/?q=button&sort=BestMatch>`_, 
+`switch <https://www.adafruit.com/?q=switch&sort=BestMatch>`_,
+`rocker <https://www.adafruit.com/?q=rocker&sort=BestMatch>`_,
+and `axis <https://www.adafruit.com/?q=joystick&sort=BestMatch>`_
+hardware in their store.
+
+The *coding* part is where JoystickXL comes in.  Check out the
+:doc:`Examples </examples>` section to see how it's done.  Reading through
+the *Basic* and *Advanced* examples should give you a pretty good sense of
+how to get started.  If your custom controller has no more than 24 buttons,
+you may be able to use the *Advanced* example as-is!
+
+If you need to dig deeper into JoystickXL's inner workings, check out the
+:doc:`API documentation </api>`.
+
+**Good luck, have fun, and happy coding!**
