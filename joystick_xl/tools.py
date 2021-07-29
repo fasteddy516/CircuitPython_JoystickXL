@@ -95,7 +95,7 @@ def TestHats(js: Joystick, pace: float = 0.25, quiet: bool = False) -> None:
 
 
 def TestConsole():
-    """Run JoystickXL's REPL-based, built-in test application."""
+    """Run JoystickXL's REPL-based, built-in test console."""
     INVALID_OPERATION = "> Invalid operation."
 
     js = Joystick()
@@ -112,7 +112,7 @@ def TestConsole():
         else:
             return i - si
 
-    print("\nJoystickXL", __version__, "- Test Application\n")
+    print("\nJoystickXL", __version__, "- Test Console\n")
     print("Using 1-based indexing.")
     print("Enter command (? for list)")
 
