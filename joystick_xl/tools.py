@@ -17,7 +17,8 @@ def TestAxes(js: Joystick, step: int = 5, quiet: bool = False) -> None:
         axis movement and faster tests.  Set to ``1`` to test every possible axis value
         (which can result in long test runs).  (Default is 5)
     :type step: int, optional
-    :param quiet: Set to ``True`` to disable console output during testing.
+    :param quiet: Set to ``True`` to disable console output during testing.  (Defaults
+        to ``False``)
     :type quiet: bool, optional
     """
     if not js.num_axes:
@@ -47,7 +48,8 @@ def TestButtons(js: Joystick, pace: float = 0.05, quiet: bool = False) -> None:
     :param pace: Duration (in seconds) and time between button presses.  (Default is
         0.05 seconds)
     :type pace: float, optional
-    :param quiet: Set to ``True`` to disable console output during testing.
+    :param quiet: Set to ``True`` to disable console output during testing.  (Defaults
+        to ``False``.)
     :type quiet: bool, optional
     """
     if not js.num_buttons:
@@ -74,7 +76,8 @@ def TestHats(js: Joystick, pace: float = 0.25, quiet: bool = False) -> None:
     :param pace: Duration (in seconds) that each hat switch direction will be engaged
         for.  (Default is 0.25 seconds)
     :type pace: float, optional
-    :param quiet: Set to ``True`` to disable console output during testing.
+    :param quiet: Set to ``True`` to disable console output during testing.  (Defaults
+        to ``False``.)
     :type quiet: bool, optional
     """
     if not js.num_hats:

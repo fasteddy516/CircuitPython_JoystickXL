@@ -24,9 +24,9 @@ class VirtualInput:
         """
         Provide an object with a ``.value`` property to represent a remote input.
 
-        :param value: Sets the initial .value property (Should be ``True`` for
-            buttons, ``32768`` for axes).
-        :type value: Union[bool, int]
+        :param value: Sets the initial ``.value`` property (Should be ``True`` for
+            active-low buttons, ``32768`` for idle/centered axes).
+        :type value: bool or int
         """
         self.value = value
 
@@ -72,7 +72,7 @@ class Axis:
         """
         Get the current, fully processed value of this axis.
 
-        :return: ``0`` to ``255``, ``128`` if at rest/centered or suppressed.
+        :return: ``0`` to ``255``, ``128`` if idle/centered or suppressed.
         :rtype: int
         """
         new_value = self._update()
@@ -87,7 +87,10 @@ class Axis:
         """
         Get the raw source input value.
 
-        For ``VirtualInput`` sources, this property can also be set.
+        *(For VirtualInput sources, this property can also be set.)*
+
+        :return: ``0`` to ``65535``
+        :rtype: int
         """
         return self._source.value
 
@@ -101,22 +104,42 @@ class Axis:
 
     @property
     def min(self) -> int:
-        """Get the configured minimum raw ``analogio`` input value."""
+        """
+        Get the configured minimum raw ``analogio`` input value.
+
+        :return: ``0`` to ``65535``
+        :rtype: int
+        """
         return self._min
 
     @property
     def max(self) -> int:
-        """Get the configured maximum raw ``analogio`` input value."""
+        """
+        Get the configured maximum raw ``analogio`` input value.
+
+        :return: ``0`` to ``65535``
+        :rtype: int
+        """
         return self._max
 
     @property
     def deadband(self) -> int:
-        """Get the raw, absolute value of the configured deadband."""
+        """
+        Get the raw, absolute value of the configured deadband.
+
+        :return: ``0`` to ``65535``
+        :rtype: int
+        """
         return self._deadband
 
     @property
     def invert(self) -> bool:
-        """Return ``True`` if the raw `analogio` input value is inverted."""
+        """
+        Return ``True`` if the raw `analogio` input value is inverted.
+
+        :return: ``True`` if inverted, ``False`` otherwise
+        :rtype: bool
+        """
         return self._invert < 0
 
     def __init__(
@@ -171,7 +194,7 @@ class Axis:
         self._last_source_value = Axis.IDLE
 
         self.suppress = suppress
-        """Set to ``True`` to make the axis always appear ``centered``."""
+        """Set to ``True`` to make the axis always appear idle/centered."""
 
         # calculate raw input midpoint and scaled deadband range
         self._raw_midpoint = self._min + ((self._max - self._min) // 2)
@@ -200,7 +223,7 @@ class Axis:
     def _update(self) -> int:
         """Read raw input data and convert it to a joystick-compatible value.
 
-        :return: ``0`` to ``255``, ``128`` if at rest/centered.
+        :return: ``0`` to ``255``, ``128`` if idle/centered.
         :rtype: int
         """
         if self._source.value == self._last_source_value:
@@ -230,6 +253,15 @@ class Button:
     def value(self) -> bool:
         """
         Get the current, fully processed value of this button input.
+
+        .. warning::
+
+            Accessing this property also updates the ``.was_pressed`` and
+            ``.was_released`` logic, which means accessing ``.value`` directly anywhere
+            other than in a call to ``Joystick.update_button()`` can make those
+            properties unreliable.  If you need to read the current state of a button
+            anywhere else in your input processing loop, you should be using
+            ``.is_pressed`` or ``.is_released`` rather than ``.value``.
 
         :return: ``True`` if pressed, ``False`` if released or suppressed.
         :rtype: bool
@@ -262,7 +294,17 @@ class Button:
     @property
     def was_pressed(self) -> bool:
         """
-        Determine if the button was just pressed.
+        Determine if this button was just pressed.
+
+        Specifically, if the button state changed from ``released`` to ``pressed``
+        between the last two reads of ``Button.value``.
+
+        .. warning::
+
+            This property only works reliably when ``Button.value`` is accessed *once
+            per iteration of your input processing loop*.  If your code uses the
+            built-in ``Joystick.add_input()`` method and associated input lists along
+            with a single call to ``Joystick.update()``, you should be fine.
 
         :return: ``True`` if the button was just pressed, ``False`` otherwise.
         :rtype: bool
@@ -272,7 +314,17 @@ class Button:
     @property
     def was_released(self) -> bool:
         """
-        Determine if the button was just released.
+        Determine if this button was just released.
+
+        Specifically, if the button state changed from ``pressed`` to ``released``
+        between the last two reads of ``Button.value``.
+
+        .. warning::
+
+            This property only works reliably when ``Button.value`` is accessed *once
+            per iteration of your input processing loop*.  If your code uses the
+            built-in ``Joystick.add_input()`` method and associated input lists along
+            with a single call to ``Joystick.update()``, you should be fine.
 
         :return: ``True`` if the button was just released, ``False`` otherwise.
         :rtype: bool
@@ -284,7 +336,10 @@ class Button:
         """
         Get the raw source input value.
 
-        For ``VirtualInput`` sources, this property can also be set.
+        *(For VirtualInput sources, this property can also be set.)*
+
+        :return: ``True`` or ``False``
+        :rtype: bool
         """
         return self._source.value is True
 
@@ -297,7 +352,12 @@ class Button:
 
     @property
     def active_low(self) -> bool:
-        """Return ``True`` if the button is configured as active low."""
+        """
+        Get the input configuration state of the button.
+
+        :return: ``True`` if the button is active low, ``False`` otherwise.
+        :rtype: bool
+        """
         return self._active_low
 
     def __init__(
@@ -361,7 +421,7 @@ class Hat:
     """Data source storage and value conversion for hat switch inputs."""
 
     U = 0
-    """Alias for the `UP` switch position."""
+    """Alias for the ``UP`` switch position."""
 
     UR = 1
     """Alias for the ``UP + RIGHT`` switch position."""
@@ -429,7 +489,12 @@ class Hat:
 
     @property
     def active_low(self) -> bool:
-        """Return ``True`` if the hat switch inputs are set to active low."""
+        """
+        Get the input configuration state of the hat switch buttons.
+
+        :return: ``True`` if the buttons are active low, ``False`` otherwise.
+        :rtype: bool
+        """
         return self._active_low
 
     def __init__(

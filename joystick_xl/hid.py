@@ -14,6 +14,12 @@ def create_joystick(axes: int = 4, buttons: int = 16, hats: int = 1) -> usb_hid.
     """
     Create the ``usb_hid.Device`` required by ``usb_hid.enable()`` in ``boot.py``.
 
+    .. note::
+
+        JoystickXL will add an entry to the ``boot_out.txt`` file on your ``CIRCUITPY``
+        drive.  It is used by the ``Joystick`` module to retrieve configuration
+        settings.
+
     :param axes: The number of axes to support, from 0 to 8.  (Default is 4)
     :type axes: int, optional
     :param buttons: The number of buttons to support, from 0 to 128.  (Default is 16)
@@ -23,6 +29,7 @@ def create_joystick(axes: int = 4, buttons: int = 16, hats: int = 1) -> usb_hid.
     :return: A ``usb_hid.Device`` object with a descriptor identifying it as a joystick
         with the specified number of buttons, axes and hat switches.
     :rtype: ``usb_hid.Device``
+
     """
     _num_axes = axes
     _num_buttons = buttons

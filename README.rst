@@ -22,33 +22,30 @@ and API will change over the next few weeks as work on it continues.**
 Description
 ===========
 This CircuitPython driver simulates a *really big* USB HID joystick device - up
-to 64 buttons, 8 axes and 4 hat (POV) switches.  If you want to build a custom
+to 128 buttons, 8 axes and 4 hat (POV) switches.  If you want to build a custom
 game controller with a lot of inputs - *I'm looking at you, space/flight sim
 pilots and racing sim drivers* - JoystickXL can help.
 
 Requirements
 ============
-*Note: JoystickXL relies on features that were introduced in CircuitPython
+*This driver relies on features that were introduced in CircuitPython
 version 7.0.0.*  **You must be running CircuitPython 7.0.0-alpha3 or newer
 on your device in order to use JoystickXL.**
 
 * This driver was made for devices running `Adafruit CircuitPython <https://www.adafruit.com/circuitpython>`_.
-  For a list of CircuitPython-compatible devices, see `circuitpython.org <https://circuitpython.org/downloads>`_.
+  For a list of compatible devices, see `circuitpython.org <https://circuitpython.org/downloads>`_.
 
-* On some of the smaller CircuitPython boards (Trinket M0, Gemma M0, etc.),
-  the maximum number of buttons is limited to 24. This is detected and
-  enforced automatically.
-
-* There are no dependencies on any other CircuitPython drivers or libraries.
+* There are no dependencies on any other CircuitPython drivers, libraries or modules.
 
 
 Host OS Compatibility
 =====================
-* **Windows 10:** All functions work correctly - 64 buttons, 8 axes, 4 hat switches.
-* **Linux:** Using ``jstest`` (part of the ``joystick`` package) on a Raspberry Pi,
-  all 64 buttons and the first 6 axes work correctly.  The last two axes do not
-  work, nor do any of the hat switches.  Other Linux platforms/distributions have
-  not been tested.
+* **Windows 10:** All functions work correctly - 8 axes, 128 buttons and 4 hat switches.
+* **Linux:** Using ``jstest`` (part of the ``joystick`` package) on a Raspberry Pi 4B,
+  the first 7 axes and 80 buttons work correctly.  Axis 8 does not register any events,
+  nor do any buttons beyond the first 80.  Only a single hat switch *sort of* works, but
+  it gets interpreted as two axes rather than an actual hat switch.  Other Linux
+  platforms/distributions/applications have not been tested.
 * **Mac:** Currently untested.
 
 
@@ -79,7 +76,7 @@ Using JoystickXL
       import usb_hid
       from joystick_xl.hid import create_joystick
 
-      usb_hid.enable((create_joystick()),)
+      usb_hid.enable((create_joystick(axes=2, buttons=2, hats=1)),)
 
 2. Use JoystickXL in ``code.py`` like this:
 
@@ -110,19 +107,13 @@ Using JoystickXL
 
 Testing JoystickXL Devices
 ==========================
-The best testing application I have found for Windows is 
-`Pointy's Joystick Test Application <http://www.planetpointy.co.uk/joystick-test-application/>`_
-which accurately shows the status of the entire set of inputs.  Note that you may need to install
-the `Microsoft DirectX End-User Runtimes <https://www.microsoft.com/en-ca/download/details.aspx?id=8109>`_
-in order to get this application to run.
+JoystickXL has a built-in testing module that can be run right from the
+CircuitPython REPL to verify compatibility with an operating system, game or
+application - *no input wiring or code.py required!*
 
-There is a web-based test application at `<https://gamepad-tester.com/>`_, but
-it doesn't get along with JoystickXL.  Axis values don't show up correctly,
-and if you have the entire set of inputs enabled, it may not even show up as
-a connected device.
-
-I have done very little testing on Linux platforms, but the little bit I've
-done has been using ``jstest`` on a Raspberry Pi command line.
+See the
+`compatibility and testing documentation <https://circuitpython-joystickxl.readthedocs.io/en/latest/start.html#verifying-compatibility>`_
+for more information.
 
 
 Contributing
