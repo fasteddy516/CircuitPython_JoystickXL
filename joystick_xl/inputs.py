@@ -72,12 +72,12 @@ class Axis:
         """
         Get the current, fully processed value of this axis.
 
-        :return: ``0`` to ``255``, ``128`` if idle/centered or suppressed.
+        :return: ``0`` to ``255``, ``128`` if idle/centered or bypassed.
         :rtype: int
         """
         new_value = self._update()
 
-        if self.suppress:
+        if self.bypass:
             return Axis.IDLE
         else:
             return new_value
@@ -149,7 +149,7 @@ class Axis:
         min: int = 0,
         max: int = 65535,
         invert: bool = False,
-        suppress: bool = False,
+        bypass: bool = False,
     ) -> None:
         """
         Provide data source storage and scaling/deadband processing for an axis input.
@@ -178,9 +178,9 @@ class Axis:
            does not match the logical direction of the axis input.
            (defaults to ``False``)
         :type invert: bool, optional
-        :param suppress: Set to ``True`` to make the axis always appear ``centered``
+        :param bypass: Set to ``True`` to make the axis always appear ``centered``
             in USB HID reports back to the host device.  (Defaults to ``False``)
-        :type suppress: bool, optional
+        :type bypass: bool, optional
         """
         self._source = Axis._initialize_source(source)
         self._deadband = deadband
@@ -193,7 +193,7 @@ class Axis:
         self._value = Axis.IDLE
         self._last_source_value = Axis.IDLE
 
-        self.suppress = suppress
+        self.bypass = bypass
         """Set to ``True`` to make the axis always appear idle/centered."""
 
         # calculate raw input midpoint and scaled deadband range
@@ -263,13 +263,13 @@ class Button:
             anywhere else in your input processing loop, you should be using
             ``.is_pressed`` or ``.is_released`` rather than ``.value``.
 
-        :return: ``True`` if pressed, ``False`` if released or suppressed.
+        :return: ``True`` if pressed, ``False`` if released or bypassed.
         :rtype: bool
         """
         self._last_state = self._state
         self._state = self._source.value != self._active_low
 
-        return self._state and not self.suppress
+        return self._state and not self.bypass
 
     @property
     def is_pressed(self) -> bool:
@@ -364,7 +364,7 @@ class Button:
         self,
         source: Pin = None,
         active_low: bool = True,
-        suppress: bool = False,
+        bypass: bool = False,
     ) -> None:
         """
         Provide data source storage and value processing for a button input.
@@ -376,16 +376,16 @@ class Button:
             (reads ``False`` when the button is pressed), otherwise set to ``False``.
             (defaults to ``True``)
         :type active_low: bool, optional
-        :param suppress: Set to ``True`` to make the button always appear ``released``
+        :param bypass: Set to ``True`` to make the button always appear ``released``
             in USB HID reports back to the host device.  (Defaults to ``False``)
-        :type suppress: bool, optional
+        :type bypass: bool, optional
         """
         self._source = Button._initialize_source(source, active_low)
         self._active_low = active_low
         self._state = False
         self._last_state = False
 
-        self.suppress = suppress
+        self.bypass = bypass
         """Set to ``True`` to make the button always appear ``released``."""
 
     @staticmethod
@@ -452,7 +452,7 @@ class Hat:
         """
         Get the current, fully processed value of this hat switch.
 
-        :return: Current position value (always ``IDLE`` if suppressed), as follows:
+        :return: Current position value (always ``IDLE`` if bypassed), as follows:
 
                 * ``0`` = UP
                 * ``1`` = UP + RIGHT
@@ -468,7 +468,7 @@ class Hat:
         """
         new_value = self._update()
 
-        if self.suppress:
+        if self.bypass:
             return Hat.IDLE
         else:
             return new_value
@@ -504,7 +504,7 @@ class Hat:
         left: Pin = None,
         right: Pin = None,
         active_low: bool = True,
-        suppress: bool = False,
+        bypass: bool = False,
     ) -> None:
         """
         Provide data source storage and value processing for a hat switch input.
@@ -525,9 +525,9 @@ class Hat:
             (read ``False`` when buttons are pressed), otherwise set to ``False``.
             (defaults to ``True``)
         :type active_low: bool, optional
-        :param suppress: Set to ``True`` to make the hat switch always appear ``idle``
+        :param bypass: Set to ``True`` to make the hat switch always appear ``idle``
             in USB HID reports back to the host device.  (Defaults to ``False``)
-        :type suppress: bool, optional
+        :type bypass: bool, optional
         """
         self.up = Button(up, active_low)
         """Button object associated with the ``up`` input."""
@@ -544,7 +544,7 @@ class Hat:
         self._active_low = active_low
         self._value = Hat.IDLE
 
-        self.suppress = suppress
+        self.bypass = bypass
         """Set to ``True`` to make the hat switch always appear ``idle``."""
 
         self._update()
