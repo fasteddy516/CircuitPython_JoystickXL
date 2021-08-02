@@ -305,7 +305,10 @@ class Joystick:
         """
         for a, value in axis:
             if skip_validation or self._validate_axis_value(a, value):
+                if self.num_axes > 7 and a > 5:
+                    a = self.num_axes - a + 5  # reverse sequence for sliders
                 self._axis_states[a] = value
+
         if not defer:
             self.update()
 
