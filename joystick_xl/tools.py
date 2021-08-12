@@ -2,6 +2,9 @@
 
 import time
 
+import board
+import digitalio
+
 from joystick_xl import __version__
 from joystick_xl.inputs import Axis, Hat
 from joystick_xl.joystick import Joystick
@@ -98,6 +101,10 @@ def TestConsole():
     """Run JoystickXL's REPL-based, built-in test console."""
     INVALID_OPERATION = "> Invalid operation."
 
+    button = digitalio.DigitalInOut(board.D2)
+    button.direction = digitalio.Direction.INPUT
+    button.pull = digitalio.Pull.UP
+
     js = Joystick()
     last_cmd = ""
     si = 1  # start index
@@ -119,6 +126,11 @@ def TestConsole():
     while True:
 
         cmd = input(": ").lower()  # prompt and user input
+
+        if cmd == "p":
+            cmd = ""
+            while button.value is True:
+                time.sleep(0.05)
 
         if not cmd and last_cmd:  # repeat last command if nothing was entered
             cmd = last_cmd

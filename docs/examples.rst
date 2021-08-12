@@ -1,20 +1,38 @@
-Joystick - Basic
+Starting Simple
 ================
 
 This is a fully functional joystick with 2 axes, 2 buttons and a single hat
 switch.
 
-.. literalinclude:: ../examples/joystick_basic/code.py
+.. literalinclude:: ../examples/basic/code.py
 
 
-Joystick - Advanced
+More Inputs!
 ===================
 
 This is a fully functional joystick with 8 axes, 24 buttons and 4 hat switches.
 Notice the only difference between this example and the basic example is the
 number of inputs added with ``add_input``. 
 
-.. literalinclude:: ../examples/joystick_advanced/code.py
+.. literalinclude:: ../examples/advanced/code.py
+
+
+I2C GPIO Expander
+======================================
+
+.. literalinclude:: ../examples/gpio_expander/code.py
+
+
+I2C Capacitive Touch
+=========================================
+
+.. literalinclude:: ../examples/capacitive_touch/code.py
+
+
+SPI ADC
+============================
+
+.. literalinclude:: ../examples/external_adc/code.py
 
 
 Multi-Unit HOTAS

@@ -38,6 +38,7 @@ extensions = [
 # Ignore imports of these modules, which sphinx will not know about.
 autodoc_mock_imports = [
     "analogio",
+    "board",
     "digitalio",
     "microcontroller",
     "usb_hid",
