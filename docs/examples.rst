@@ -1,42 +1,42 @@
-Starting Simple
-================
+1. Start Simple
+===============
 
 This is a fully functional joystick with 2 axes, 2 buttons and a single hat
 switch.
 
-.. literalinclude:: ../examples/basic/code.py
+.. literalinclude:: ../examples/1_start_simple/code.py
 
 
-More Inputs!
-===================
+2. More Inputs!
+===============
 
 This is a fully functional joystick with 8 axes, 24 buttons and 4 hat switches.
 Notice the only difference between this example and the basic example is the
 number of inputs added with ``add_input``. 
 
-.. literalinclude:: ../examples/advanced/code.py
+.. literalinclude:: ../examples/2_more_inputs/code.py
 
 
-I2C GPIO Expander
-======================================
-
-.. literalinclude:: ../examples/gpio_expander/code.py
-
-
-I2C Capacitive Touch
-=========================================
-
-.. literalinclude:: ../examples/capacitive_touch/code.py
-
-
-SPI ADC
-============================
-
-.. literalinclude:: ../examples/external_adc/code.py
-
-
-Multi-Unit HOTAS
+3. GPIO Expander
 ================
+
+.. literalinclude:: ../examples/3_gpio_expander/code.py
+
+
+4. Capacitive Touch
+===================
+
+.. literalinclude:: ../examples/4_capacitive_touch/code.py
+
+
+5. External ADC
+===============
+
+.. literalinclude:: ../examples/5_external_adc/code.py
+
+
+6. Multi-Unit HOTAS
+===================
 
 This is a much more complicated example that uses a pair of Adafruit Grand
 Central M4 Express boards to create a HOTAS.  (If you have no idea what that
@@ -74,5 +74,5 @@ associated data processing.  Everything else is almost identical to the
 *Basic* example above - create a JoystickXL object, associate inputs with it
 and make sure you call the jooystick's ``update()`` method in your main loop.
 
-.. literalinclude:: ../examples/hotas/stick/code.py
-.. literalinclude:: ../examples/hotas/throttle/code.py
+.. literalinclude:: ../examples/6_hotas/stick/code.py
+.. literalinclude:: ../examples/6_hotas/throttle/code.py

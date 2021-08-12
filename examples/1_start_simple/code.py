@@ -1,5 +1,5 @@
 """
-JoystickXL basic example with 2 axes, 2 buttons, 1 hat switch.
+JoystickXL Example #1 - Start Simple (2 axes, 2 buttons, 1 hat switch).
 
 Tested on an Adafruit ItsyBitsy M4 Express, but should work on other CircuitPython
 boards with a sufficient quantity/type of pins.

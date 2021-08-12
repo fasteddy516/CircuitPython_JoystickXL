@@ -19,7 +19,7 @@ the ``boot.py`` file on your CircuitPython board.
 If ``boot.py`` does not currently exist in the root folder on your board's
 ``CIRCUITPY`` drive, you can create it using the standard example below:
 
-.. literalinclude:: ../examples/boot/standard/boot.py
+.. literalinclude:: ../examples/0_boot.py/standard/boot.py
     
 This enables JoystickXL along with CircuitPython's other standard USB HID
 devices.  The ``axes``, ``buttons`` and ``hats`` parameters are all set to
@@ -30,7 +30,7 @@ Alternatively, if you're not using any other CircuitPython USB-HID devices
 and don't want them to appear on the host, you can enable the joystick
 device by itself as shown below:
 
-.. literalinclude:: ../examples/boot/minimal/boot.py
+.. literalinclude:: ../examples/0_boot.py/minimal/boot.py
     
 .. note:: 
 
@@ -180,9 +180,9 @@ hardware in their store.
 
 The *coding* part is where JoystickXL comes in.  Check out the
 :doc:`Examples </examples>` section to see how it's done.  Reading through
-the *Basic* and *Advanced* examples should give you a pretty good sense of
+the first couple of examples should give you a pretty good sense of
 how to get started.  If your custom controller has no more than 24 buttons,
-you may be able to use the *Advanced* example as-is!
+you may be able to use the *More Inputs* example as-is!
 
 If you need to dig deeper into JoystickXL's inner workings, check out the
 :doc:`API documentation </api>`.

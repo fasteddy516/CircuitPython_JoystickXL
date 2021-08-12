@@ -20,7 +20,7 @@ JoystickXL for CircuitPython
 Description
 ===========
 This CircuitPython driver simulates a *really big* USB HID joystick device - up
-to 128 buttons, 8 axes and 4 hat (POV) switches.  If you want to build a custom
+to 8 axes, 128 buttons and 4 hat (POV) switches.  If you want to build a custom
 game controller with a lot of inputs - *I'm looking at you, space/flight sim
 pilots and racing sim drivers* - JoystickXL can help.
 
@@ -37,15 +37,26 @@ on your device in order to use JoystickXL.**
 * There are no dependencies on any other CircuitPython drivers, libraries or modules.
 
 
-Host OS Compatibility
-=====================
-* **Windows 10:** All functions work correctly - 8 axes, 128 buttons and 4 hat switches.
-* **Linux:** Using ``jstest`` (part of the ``joystick`` package) on a Raspberry Pi 4B,
-  the first 7 axes and 80 buttons work correctly.  Axis 8 does not register any events,
-  nor do any buttons beyond the first 80.  Only a single hat switch *sort of* works, but
-  it gets interpreted as two axes rather than an actual hat switch.  Other Linux
-  platforms/distributions/applications have not been tested.
-* **Mac:** Currently untested.
+Host OS/Software Compatibility
+==============================
+On **Windows 10**, all 8 axes 128 buttons and 4 hat switches are supported at
+the operating system level, and JoystickXL has been tested and confirmed to work
+with the following games:
+
+* **Microsoft Flight Simulator (2020)** *(All inputs)*
+* **Elite Dangerous** *(Limited to 32 buttons)*
+* **Star Citizen** *(All inputs)*
+* **Forza Horizon 4** *(All inputs)*
+* **BeamNG.drive** *(Limited to 1 hat switch)*
+
+On **Linux**, a very limited amount of testing has been done on a Raspberry Pi
+4B using ``jstest`` (part of the ``joystick`` package).  The first 7 axes and
+80 buttons work correctly.  Axis 8 does not register any events, nor do any
+buttons beyond the first 80.  Only a single hat switch *sort of* works, but it
+gets interpreted as two axes rather than an actual hat switch.  Other Linux
+platforms/distributions/applications have not been tested.
+
+No testing has been done on an **Apple/Mac** platform.
 
 
 Documentation

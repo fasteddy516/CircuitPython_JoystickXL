@@ -1,5 +1,5 @@
 """
-JoystickXL HOTAS (Hands On Throttle And Stick) Example - Throttle Component.
+JoystickXL Example #6 - HOTAS (Hands On Throttle And Stick) Throttle Component.
 
 Tested on an Adafruit Grand Central M4 Express, but should work on other CircuitPython
 boards with a sufficient quantity/type of pins.

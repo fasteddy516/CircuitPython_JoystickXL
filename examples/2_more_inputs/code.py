@@ -1,5 +1,5 @@
 """
-JoystickXL advanced example with 8 axes, 24 buttons, 4 hat switches.
+JoystickXL Example #2 - More Inputs! (8 axes, 24 buttons, 4 hat switches).
 
 Tested on an Adafruit Grand Central M4 Express, but should work on other CircuitPython
 boards with a sufficient quantity/type of pins.
