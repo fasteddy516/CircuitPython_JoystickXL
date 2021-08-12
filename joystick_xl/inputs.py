@@ -144,7 +144,7 @@ class Axis:
 
     def __init__(
         self,
-        source: Pin = None,
+        source=None,
         deadband: int = 0,
         min: int = 0,
         max: int = 65535,
@@ -154,9 +154,10 @@ class Axis:
         """
         Provide data source storage and scaling/deadband processing for an axis input.
 
-        :param source: CircuitPython pin identifier (i.e. ``board.A0``).  (Defaults
-           to ``None``, which will create a ``VirtualInput`` source instead.)
-        :type source: Pin, optional
+        :param source: CircuitPython pin identifier (i.e. ``board.A0``) or any object
+            with an int ``.value`` attribute.  (Defaults to ``None``, which will create
+            a ``VirtualInput`` source instead.)
+        :type source: Any, optional
         :param deadband: Raw, absolute value of the deadband to apply around the
            midpoint of the raw source value.  The deadband is used to prevent an axis
            from registering minimal values when it is centered.  Setting the deadband
@@ -203,22 +204,24 @@ class Axis:
         self._update()
 
     @staticmethod
-    def _initialize_source(
-        pin: Union[Pin, VirtualInput],
-    ) -> Union[AnalogIn, VirtualInput]:
+    def _initialize_source(source):
         """
-        Configure a source as a GPIO analog input pin or VirtualInput.
+        Configure a source as an on-board pin, off-board input or VirtualInput.
 
-        :param pin: CircuitPython pin identifier (i.e. ``board.A3``), or a
-            ``VirtualInput`` object.
-        :type pin: Pin or VirtualInput
+        :param source: CircuitPython pin identifier (i.e. ``board.A3``), any object
+            with an int ``.value`` attribute or a ``VirtualInput`` object.
+        :type source: Any
         :return: A fully configured analog source pin or virtual input.
         :rtype: AnalogIn or VirtualInput
         """
-        if isinstance(pin, Pin):
-            return AnalogIn(pin)
-        else:
+        if source is None:
             return VirtualInput(value=32768)
+        elif isinstance(source, Pin):
+            return AnalogIn(source)
+        elif hasattr(source, "value") and isinstance(source.value, int):
+            return source
+        else:
+            raise TypeError("Incompatible axis source specified.")
 
     def _update(self) -> int:
         """Read raw input data and convert it to a joystick-compatible value.
@@ -362,16 +365,17 @@ class Button:
 
     def __init__(
         self,
-        source: Pin = None,
+        source=None,
         active_low: bool = True,
         bypass: bool = False,
     ) -> None:
         """
         Provide data source storage and value processing for a button input.
 
-        :param source: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-            to ``None``, which will create a ``VirtualInput`` source instead.)
-        :type source: Pin, optional
+        :param source: CircuitPython pin identifier (i.e. ``board.D2``), or any object
+            with a boolean ``.value`` attribute.  (Defaults to ``None``, which will
+            create a ``VirtualInput`` source instead.)
+        :type source: Any, optional
         :param active_low: Set to ``True`` if the input pin is active low
             (reads ``False`` when the button is pressed), otherwise set to ``False``.
             (defaults to ``True``)
@@ -389,32 +393,33 @@ class Button:
         """Set to ``True`` to make the button always appear ``released``."""
 
     @staticmethod
-    def _initialize_source(
-        pin: Union[Pin, VirtualInput],
-        active_low: bool,
-    ) -> Union[DigitalInOut, VirtualInput]:
+    def _initialize_source(source, active_low: bool):
         """
-        Configure a source as a GPIO digital input pin or VirtualInput.
+        Configure a source as an on-board pin, off-board input or VirtualInput.
 
-        :param pin: CircuitPython pin identifier (i.e. ``board.D2``), or a
-            ``VirtualInput`` object.
-        :type pin: Pin or VirtualInput
+        :param source: CircuitPython pin identifier (i.e. ``board.D2``), any object
+            with a boolean ``.value`` attribute or a ``VirtualInput`` object.
+        :type source: Any
         :param active_low: Set to ``True`` if the input pin is active low (reads
             ``False`` when the button is pressed), otherwise set to ``False``.
         :type active_low: bool
         :return: A fully configured digital source pin or virtual input.
-        :rtype: DigitalInOut or VirtualInput
+        :rtype: Any
         """
-        if isinstance(pin, Pin):
-            source = DigitalInOut(pin)
-            source.direction = Direction.INPUT
+        if source is None:
+            return VirtualInput(value=active_low)
+        elif isinstance(source, Pin):
+            source_gpio = DigitalInOut(source)
+            source_gpio.direction = Direction.INPUT
             if active_low:
-                source.pull = Pull.UP
+                source_gpio.pull = Pull.UP
             else:
-                source.pull = Pull.DOWN
+                source_gpio.pull = Pull.DOWN
+            return source_gpio
+        elif hasattr(source, "value") and isinstance(source.value, bool):
             return source
         else:
-            return VirtualInput(value=active_low)
+            raise TypeError("Incompatible button source specified.")
 
 
 class Hat:
@@ -499,28 +504,32 @@ class Hat:
 
     def __init__(
         self,
-        up: Pin = None,
-        down: Pin = None,
-        left: Pin = None,
-        right: Pin = None,
+        up=None,
+        down=None,
+        left=None,
+        right=None,
         active_low: bool = True,
         bypass: bool = False,
     ) -> None:
         """
         Provide data source storage and value processing for a hat switch input.
 
-        :param up: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-            to ``None``, which will create a ``VirtualInput`` source instead.)
-        :type up: Pin, optional
-        :param down: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-            to ``None``, which will create a ``VirtualInput`` source instead.)
-        :type down: Pin, optional
-        :param left: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-            to ``None``, which will create a ``VirtualInput`` source instead.)
-        :type left: Pin, optional
-        :param right: CircuitPython pin identifier (i.e. ``board.D2``).  (Defaults
-            to ``None``, which will create a ``VirtualInput`` source instead.)
-        :type right: Pin, optional
+        :param up: CircuitPython pin identifier (i.e. ``board.D2``) or any object with
+            a boolean ``.value`` attribute.  (Defaults to ``None``, which will create
+            a ``VirtualInput`` source instead.)
+        :type up: Any, optional
+        :param down: CircuitPython pin identifier (i.e. ``board.D2``) or any object with
+            a boolean ``.value`` attribute.  (Defaults to ``None``, which will create
+            a ``VirtualInput`` source instead.)
+        :type down: Any, optional
+        :param left: CircuitPython pin identifier (i.e. ``board.D2``) or any object with
+            a boolean ``.value`` attribute.  (Defaults to ``None``, which will create
+            a ``VirtualInput`` source instead.)
+        :type left: Any, optional
+        :param right: CircuitPython pin identifier (i.e. ``board.D2``) or any object
+            with a boolean ``.value`` attribute.  (Defaults to ``None``, which will
+            create a ``VirtualInput`` source instead.)
+        :type right: Any, optional
         :param active_low: Set to ``True`` if the input pins are active low
             (read ``False`` when buttons are pressed), otherwise set to ``False``.
             (defaults to ``True``)
