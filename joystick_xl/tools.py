@@ -2,8 +2,8 @@
 
 import time
 
-import board
-import digitalio
+import board  # type: ignore (this is a CircuitPython built-in)
+import digitalio  # type: ignore (this is a CircuitPython built-in)
 
 from joystick_xl import __version__
 from joystick_xl.inputs import Axis, Hat

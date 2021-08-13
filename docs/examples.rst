@@ -17,25 +17,31 @@ number of inputs added with ``add_input``.
 .. literalinclude:: ../examples/2_more_inputs/code.py
 
 
-3. GPIO Expander
+3. Button Operations
+====================
+
+.. literalinclude:: ../examples/3_button_operations/code.py
+
+
+4. GPIO Expander
 ================
 
-.. literalinclude:: ../examples/3_gpio_expander/code.py
+.. literalinclude:: ../examples/4_gpio_expander/code.py
 
 
-4. Capacitive Touch
+5. Capacitive Touch
 ===================
 
-.. literalinclude:: ../examples/4_capacitive_touch/code.py
+.. literalinclude:: ../examples/5_capacitive_touch/code.py
 
 
-5. External ADC
+6. External ADC
 ===============
 
-.. literalinclude:: ../examples/5_external_adc/code.py
+.. literalinclude:: ../examples/6_external_adc/code.py
 
 
-6. Multi-Unit HOTAS
+7. Multi-Unit HOTAS
 ===================
 
 This is a much more complicated example that uses a pair of Adafruit Grand
@@ -74,5 +80,5 @@ associated data processing.  Everything else is almost identical to the
 *Basic* example above - create a JoystickXL object, associate inputs with it
 and make sure you call the jooystick's ``update()`` method in your main loop.
 
-.. literalinclude:: ../examples/6_hotas/stick/code.py
-.. literalinclude:: ../examples/6_hotas/throttle/code.py
+.. literalinclude:: ../examples/7_hotas/stick/code.py
+.. literalinclude:: ../examples/7_hotas/throttle/code.py
