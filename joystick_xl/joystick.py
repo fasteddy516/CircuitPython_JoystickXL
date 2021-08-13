@@ -314,7 +314,7 @@ class Joystick:
 
     def update_button(
         self,
-        *button: Tuple[int, int],
+        *button: Tuple[int, bool],
         defer: bool = False,
         skip_validation: bool = False,
     ) -> None:
@@ -323,7 +323,7 @@ class Joystick:
 
         :param button: One or more tuples containing a button index (0-based) and
            value (``True`` if pressed, ``False`` if released).
-        :type button: Tuple[int, int]
+        :type button: Tuple[int, bool]
         :param defer: When ``True``, prevents sending a USB HID report upon completion.
            Defaults to ``False``.
         :type defer: bool
