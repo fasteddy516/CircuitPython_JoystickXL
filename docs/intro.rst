@@ -47,7 +47,7 @@ with the following games:
 * **Elite Dangerous** *(Limited to 32 buttons)*
 * **Star Citizen** *(All inputs)*
 * **Forza Horizon 4** *(All inputs)*
-* **BeamNG.drive** *(Limited to 1 hat switch)*
+* **BeamNG.drive** *(Limited to 7 axes and 1 hat switch)*
 
 On **Linux**, a very limited amount of testing has been done on a Raspberry Pi
 4B using ``jstest`` (part of the ``joystick`` package).  The first 7 axes and
