@@ -1,8 +1,9 @@
 """
-JoystickXL Example #5 - Capacitive Touch (8 buttons and 1 hat switch).
+JoystickXL Example #6 - Capacitive Touch (8 buttons and 1 hat switch).
 
-This example uses an MPR121 12-Key Capacitive Touch Sensor Breakout https://www.adafruit.com/product/1982,
-and requires the `adafruit_mpr121` and `adafruit_bus_device` libraries from the CircuitPython Library Bundle.
+This example uses an MPR121 12-Key Capacitive Touch Sensor Breakout
+(https://www.adafruit.com/product/1982), and requires the `adafruit_mpr121` and
+`adafruit_bus_device` libraries from the CircuitPython Library Bundle.
 
 Tested on an Adafruit Metro M4 Express, but should work on other CircuitPython
 boards with a sufficient quantity/type of pins.

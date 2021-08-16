@@ -11,8 +11,8 @@ switch.
 ===============
 
 This is a fully functional joystick with 8 axes, 24 buttons and 4 hat switches.
-Notice the only difference between this example and the basic example is the
-number of inputs added with ``add_input``. 
+Notice the only difference between this example and the *Start Simple* example
+is the number of inputs added with ``add_input``. 
 
 .. literalinclude:: ../examples/2_more_inputs/code.py
 
@@ -20,25 +20,41 @@ number of inputs added with ``add_input``.
 3. Button Operations
 ====================
 
+This example shows some of the options available for detecting, processing and
+bypassing button presses, which can be useful when you want to start adding
+things like LEDs and other sensors to your custom controller.
+
 .. literalinclude:: ../examples/3_button_operations/code.py
 
 
 4. GPIO Expander
 ================
 
+If you find yourself running out of GPIO pins on your CircuitPython board, you
+can add I/O expander peripherals to get the extra pins you need.  The Microchip
+MCP23017 is ideal, as Adafruit has a CircuitPython driver for it that lets us
+treat the inputs *almost* exactly like on-board pins.
+
 .. literalinclude:: ../examples/4_gpio_expander/code.py
 
 
-5. Capacitive Touch
-===================
-
-.. literalinclude:: ../examples/5_capacitive_touch/code.py
-
-
-6. External ADC
+5. External ADC
 ===============
 
-.. literalinclude:: ../examples/6_external_adc/code.py
+Similar to the previous example, this one shows how to use an external
+analog-to-digital convertor (Microchip MCP3008) to get additional inputs for
+axes.
+
+.. literalinclude:: ../examples/5_external_adc/code.py
+
+
+6. Capacitive Touch
+===================
+
+Adding capacitive touch inputs is simple when you use a device with an existing
+CircuitPython driver, such as the Adafruit MPR121 Capacitive Touch Breakout.
+
+.. literalinclude:: ../examples/6_capacitive_touch/code.py
 
 
 7. Multi-Unit HOTAS
@@ -71,13 +87,11 @@ but the whole collection appears to the host computer as a single 32 button,
 
 This example makes use of JoystickXL's virtual inputs, which allow raw input
 values to be assigned to them in code rather then read directly from GPIO pins.
-This functionality can be used in other "remote I/O" situations, such as using
-an I2C GPIO expander with a much smaller CircuitPython board.
 
 If you look closely, you'll notice that the only really *complicated* parts
 of this example are the bits that deal with the serial communications and the
 associated data processing.  Everything else is almost identical to the
-*Basic* example above - create a JoystickXL object, associate inputs with it
+*Start Simple* example above - create a JoystickXL object, associate inputs with it
 and make sure you call the jooystick's ``update()`` method in your main loop.
 
 .. literalinclude:: ../examples/7_hotas/stick/code.py

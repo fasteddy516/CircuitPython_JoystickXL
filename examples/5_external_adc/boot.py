@@ -10,6 +10,6 @@ usb_hid.enable(
         usb_hid.Device.KEYBOARD,
         usb_hid.Device.MOUSE,
         usb_hid.Device.CONSUMER_CONTROL,
-        create_joystick(axes=0, buttons=8, hats=1),
+        create_joystick(axes=8, buttons=0, hats=0),
     )
 )
