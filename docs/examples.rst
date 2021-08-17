@@ -35,6 +35,9 @@ can add I/O expander peripherals to get the extra pins you need.  The Microchip
 MCP23017 is ideal, as Adafruit has a CircuitPython driver for it that lets us
 treat the inputs *almost* exactly like on-board pins.
 
+Check out Adafruit's `MCP23017 CircuitPython Guide <https://learn.adafruit.com/using-mcp23008-mcp23017-with-circuitpython>`_
+for more information on how to use this peripheral device.
+
 .. literalinclude:: ../examples/4_gpio_expander/code.py
 
 
@@ -45,6 +48,9 @@ Similar to the previous example, this one shows how to use an external
 analog-to-digital convertor (Microchip MCP3008) to get additional inputs for
 axes.
 
+Check out Adafruit's `MCP3008 CircuitPython Guide <https://learn.adafruit.com/mcp3008-spi-adc/python-circuitpython>`_
+for more information on how to use this peripheral device.
+
 .. literalinclude:: ../examples/5_external_adc/code.py
 
 
@@ -53,6 +59,9 @@ axes.
 
 Adding capacitive touch inputs is simple when you use a device with an existing
 CircuitPython driver, such as the Adafruit MPR121 Capacitive Touch Breakout.
+
+Check out Adafruit's `MPR121 Breakout Guide <https://learn.adafruit.com/adafruit-mpr121-12-key-capacitive-touch-sensor-breakout-tutorial/python-circuitpython>`_
+for more information on how to use this peripheral device.
 
 .. literalinclude:: ../examples/6_capacitive_touch/code.py
 
