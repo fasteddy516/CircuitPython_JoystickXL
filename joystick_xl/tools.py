@@ -4,6 +4,7 @@ import time
 
 import board  # type: ignore (this is a CircuitPython built-in)
 import digitalio  # type: ignore (this is a CircuitPython built-in)
+from supervisor import runtime  # type: ignore (this is a CircuitPython built-in)
 
 from joystick_xl import __version__
 from joystick_xl.inputs import Axis, Hat
@@ -125,12 +126,15 @@ def TestConsole():
 
     while True:
 
-        cmd = input(": ").lower()  # prompt and user input
+        print(": ", end="")
+        cmd = ""
 
-        if cmd == "p":
-            cmd = ""
-            while button.value is True:
-                time.sleep(0.05)
+        while not runtime.serial_bytes_available:
+            if button.value is False:
+                break
+
+        if runtime.serial_bytes_available:
+            cmd = input().lower()  # prompt and user input
 
         if not cmd and last_cmd:  # repeat last command if nothing was entered
             cmd = last_cmd
