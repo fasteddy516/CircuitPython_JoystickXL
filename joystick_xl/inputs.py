@@ -199,7 +199,7 @@ class Axis:
 
         # calculate raw input midpoint and scaled deadband range
         self._raw_midpoint = self._min + ((self._max - self._min) // 2)
-        self._db_range = self._max - self._min - (self._deadband * 2)
+        self._db_range = self._max - self._min - (self._deadband * 2) + 1
 
         self._update()
 
@@ -244,7 +244,7 @@ class Axis:
             new_value = self._db_range // 2
 
         # calculate scaled joystick-compatible value and clamp to 0-255
-        self._value = min(new_value * 255 // self._db_range, 255)
+        self._value = min(new_value * 256 // self._db_range, 255)
 
         return self._value
 
