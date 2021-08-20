@@ -28,7 +28,8 @@ using fewer inputs.
 
 Alternatively, if you're not using any other CircuitPython USB-HID devices
 and don't want them to appear on the host, you can enable the joystick
-device by itself as shown below:
+device by itself as shown below.  (The ``usb_hid.enable()`` function always
+expects a tuple - even when it is only given a single device.) 
 
 .. literalinclude:: ../examples/0_boot.py/minimal/boot.py
     
