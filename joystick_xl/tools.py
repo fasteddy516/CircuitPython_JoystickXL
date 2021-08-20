@@ -103,7 +103,6 @@ def TestHats(js: Joystick, pace: float = 0.25, quiet: bool = False) -> None:
 def TestConsole(button_pin: Pin = board.D2):
     """Run JoystickXL's REPL-based, built-in test console."""
     INVALID_OPERATION = "> Invalid operation."
-    PRESS_TIME = 0.25
 
     button = digitalio.DigitalInOut(button_pin)
     button.direction = digitalio.Direction.INPUT
@@ -112,6 +111,7 @@ def TestConsole(button_pin: Pin = board.D2):
     js = Joystick()
     last_cmd = ""
     si = 1  # start index
+    pt = 0.25  # press time
 
     def ValidateIndex(i: int, limit: int, name: str) -> int:
         if not limit:
@@ -125,6 +125,7 @@ def TestConsole(button_pin: Pin = board.D2):
 
     print("\nJoystickXL", __version__, "- Test Console\n")
     print("Using 1-based indexing.")
+    print("Button Clicks = 0.25s")
     print("Enter command (? for list)")
 
     while True:
@@ -167,7 +168,7 @@ def TestConsole(button_pin: Pin = board.D2):
                 continue
             print("> Axis", i + si, operation)
             js.update_axis((i, value))
-            time.sleep(PRESS_TIME)
+            time.sleep(pt)
             js.update_axis((i, Axis.IDLE))
 
         # button functions
@@ -180,7 +181,7 @@ def TestConsole(button_pin: Pin = board.D2):
                 continue
             print("> Button", i + si, "CLICK")
             js.update_button((i, True))
-            time.sleep(PRESS_TIME)
+            time.sleep(pt)
             js.update_button((i, False))
 
         # hat functions
@@ -220,7 +221,7 @@ def TestConsole(button_pin: Pin = board.D2):
                 continue
             print("> Hat Switch", i + si, operation)
             js.update_hat((i, value))
-            time.sleep(PRESS_TIME)
+            time.sleep(pt)
             js.update_hat((i, Hat.IDLE))
 
         # auto-test functions
@@ -244,6 +245,11 @@ def TestConsole(button_pin: Pin = board.D2):
             si = 1
             print("> Using 1-based indexing.")
 
+        # set button press time
+        elif cmd.startswith("p"):
+            pt = num / 100
+            print("> Button presses set to", pt, "seconds.")
+
         # help
         elif cmd.startswith("?"):
             print("  a = axis (ex. `a2+`, `a1-`, `at`)")
@@ -252,6 +258,7 @@ def TestConsole(button_pin: Pin = board.D2):
             print("  t = test all")
             print("  0 = 0-based indexing (button 1 = 0)")
             print("  1 = 1-based indexing (button 1 = 1)")
+            print("  p = click time (ex. `p150` = 1.5 seconds")
             print("  q = quit")
 
         # quit
