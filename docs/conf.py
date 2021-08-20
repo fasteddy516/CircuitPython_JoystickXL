@@ -42,6 +42,7 @@ autodoc_mock_imports = [
     "digitalio",
     "microcontroller",
     "usb_hid",
+    "supervisor",
 ]
 autodoc_typehints = "both"
 autodoc_member_order = "bysource"

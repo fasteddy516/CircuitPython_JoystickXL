@@ -87,6 +87,7 @@ When the test console loads up, you will be greeted with the following:
     JoystickXL - Test Console
 
     Using 1-based indexing.
+    Button Clicks = 0.25s"
     Enter command (? for list)
     :
 
@@ -96,8 +97,8 @@ the prompt and press enter.  The avalable commands are:
 
 * ``a`` : **Axis commands**
   
-  * ``[i]+`` : Momentarily set axis ``i`` to its maximum value. (ex. ``a1+``)
-  * ``[i]-`` : Momentarily set axis ``i`` to its minimum value. (ex. ``a4-``)
+  * ``[i]u`` : Move axis ``i`` from idle to its maximum value and back. (ex. ``a1u``)
+  * ``[i]d`` : Move axis ``i`` from idle to its minimum value and back. (ex. ``a4d``)
   * ``t`` : Test all configured axes by simulating movement on them one at a time. (ex. ``at``)
 
 * ``b`` : **Button commands**
@@ -111,11 +112,16 @@ the prompt and press enter.  The avalable commands are:
   * ``[i]d`` : Click hat switch ``i``'s ``DOWN`` button. (ex. ``h3d``)
   * ``[i]l`` : Click hat switch ``i``'s ``LEFT`` button. (ex. ``h0l``)
   * ``[i]r`` : Click hat switch ``i``'s ``RIGHT`` button. (ex. ``h2r``)
+  * ``[i]ul`` : Click hat switch ``i``'s ``UP+LEFT`` button. (ex. ``h1ul``)
+  * ``[i]ur`` : Click hat switch ``i``'s ``UP+RIGHT`` button. (ex. ``h3ur``)
+  * ``[i]dl`` : Click hat switch ``i``'s ``DOWN+LEFT`` button. (ex. ``h0dl``)
+  * ``[i]dr`` : Click hat switch ``i``'s ``DOWN+RIGHT`` button. (ex. ``h2dr``)
   * ``t`` : Test all configured hat switches by clicking each position one at a time. (ex. ``ht``)
 
 * ``t`` = Test all configured axes, buttons and hats by cycling through their states one at a time.
 * ``0`` = Switch to 0-based indexing
 * ``1`` = Switch to 1-based indexing
+* ``p[t]`` = Set button press time. (ex. ``p150`` = 1.5 second button presses) 
 * ``q`` = Quit the test console
 
 .. note::
@@ -137,7 +143,7 @@ that game's input configuration settings, select your JoystickXL device
 (likely labelled ``CircuitPython HID``) and attempt to assign inputs to
 functions.  Ideally, the game uses a *click to assign* system where you
 select the desired function, then move/click the input you want to assign to
-it.  If so, you can use the corresponding test console command (ex. ``a2+``, 
+it.  If so, you can use the corresponding test console command (ex. ``a2u``, 
 ``b7``, ``h3d``, etc.) to trigger the desired input and make sure it registers
 in-game.
 
@@ -146,6 +152,27 @@ in-game.
     Make sure you start the JoystickXL test console before you start the
     application you want to test it with on your host.  If you start the
     application on the host first, it may not detect the joystick.
+
+**If the application you are trying to test has to be in-focus to capture
+joystick events** it will not capture events generated from the test console
+because your serial terminal will be in-focus while you are typing in it.
+For cases like these, the test console provides a single digital input - by
+default on pin ``D2`` - which will repeat the last typed command when activated.
+You can either hook up an actual button, or just short ``D2`` to ground to
+trigger commands as needed.  In the game example above, you would enter the
+desired command in the test console and press enter, then switch to the game
+and use the button input to trigger that command while the game is in focus.
+If needed, the button pin can also be changed when the test console is started
+as follows:
+
+.. code-block:: text
+
+    Adafruit CircuitPython 7.0.0-alpha.5 on 2021-07-21; Adafruit QT Py M0 Haxpress with samd21e18
+    >>> import board
+    >>> from joystick_xl.tools import TestConsole
+    >>> TestConsole(button_pin = board.D7)
+
+
 
 .. seealso::
     

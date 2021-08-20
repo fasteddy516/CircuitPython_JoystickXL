@@ -24,6 +24,8 @@ to 8 axes, 128 buttons and 4 hat (POV) switches.  If you want to build a custom
 game controller with a lot of inputs - *I'm looking at you, space/flight sim
 pilots and racing sim drivers* - JoystickXL can help.
 
+**Head over to the** :doc:`Getting Started </start>` **section to dive in!**
+
 
 Requirements
 ============
@@ -46,6 +48,7 @@ with the following games:
 * **Microsoft Flight Simulator (2020)** *(All inputs)*
 * **Elite Dangerous** *(Limited to 32 buttons)*
 * **Star Citizen** *(All inputs)*
+* **Digital Combat Simulator (DCS) World** *(All inputs)*
 * **Forza Horizon 4** *(All inputs)*
 * **BeamNG.drive** *(Limited to 7 axes and 1 hat switch)*
 
