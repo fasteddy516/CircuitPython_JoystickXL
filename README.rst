@@ -46,6 +46,7 @@ with the following games:
 * **Microsoft Flight Simulator (2020)** *(All inputs)*
 * **Elite Dangerous** *(Limited to 32 buttons)*
 * **Star Citizen** *(All inputs)*
+* **Digital Combat Simulator (DCS) World** *(All inputs)*
 * **Forza Horizon 4** *(All inputs)*
 * **BeamNG.drive** *(Limited to 7 axes and 1 hat switch)*
 
