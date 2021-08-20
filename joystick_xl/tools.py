@@ -123,6 +123,13 @@ def TestConsole(button_pin: Pin = board.D2):
         else:
             return i - si
 
+    def MoveAxis(axis: int, stop: int, step: int) -> None:
+        for i in range(Axis.IDLE, stop, step):
+            js.update_axis((axis, i))
+        for i in range(stop, Axis.IDLE, -step):
+            js.update_axis((axis, i))
+        js.update_axis((axis, Axis.IDLE))
+
     print("\nJoystickXL", __version__, "- Test Console\n")
     print("Using 1-based indexing.")
     print("Button Clicks = 0.25s")
@@ -157,19 +164,19 @@ def TestConsole(button_pin: Pin = board.D2):
             i = ValidateIndex(num, js.num_axes, "axis")
             if i < 0:
                 continue
-            elif cmd.endswith("+"):
-                operation = "MAX"
+            elif cmd.endswith("u"):
+                operation = "UP"
                 value = Axis.MAX
-            elif cmd.endswith("-"):
-                operation = "MIN"
+                step = 3
+            elif cmd.endswith("d"):
+                operation = "DOWN"
                 value = Axis.MIN
+                step = -3
             else:
                 print(INVALID_OPERATION)
                 continue
             print("> Axis", i + si, operation)
-            js.update_axis((i, value))
-            time.sleep(pt)
-            js.update_axis((i, Axis.IDLE))
+            MoveAxis(i, value, step)
 
         # button functions
         elif cmd.startswith("b"):
@@ -252,9 +259,9 @@ def TestConsole(button_pin: Pin = board.D2):
 
         # help
         elif cmd.startswith("?"):
-            print("  a = axis (ex. `a2+`, `a1-`, `at`)")
+            print("  a = axis (ex. `a2u`, `a1d`, `at`)")
             print("  b = button (ex. `b13`, `bt`)")
-            print("  h = hat (ex. `h1u`, `h1d`, `h1l`, `h1r`, `ht`)")
+            print("  h = hat (ex. `h1u`, `h1d`, `h1ul`, `h1dr`, `ht`)")
             print("  t = test all")
             print("  0 = 0-based indexing (button 1 = 0)")
             print("  1 = 1-based indexing (button 1 = 1)")
