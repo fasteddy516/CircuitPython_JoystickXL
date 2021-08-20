@@ -2,9 +2,11 @@
 
 import time
 
-import board  # type: ignore (this is a CircuitPython built-in)
-import digitalio  # type: ignore (this is a CircuitPython built-in)
-from supervisor import runtime  # type: ignore (this is a CircuitPython built-in)
+# These are all CircuitPython built-ins
+import board  # type: ignore
+import digitalio  # type: ignore
+from microcontroller import Pin  # type: ignore
+from supervisor import runtime  # type: ignore
 
 from joystick_xl import __version__
 from joystick_xl.inputs import Axis, Hat
@@ -98,11 +100,11 @@ def TestHats(js: Joystick, pace: float = 0.25, quiet: bool = False) -> None:
         print("DONE")
 
 
-def TestConsole():
+def TestConsole(button_pin: Pin = board.D2):
     """Run JoystickXL's REPL-based, built-in test console."""
     INVALID_OPERATION = "> Invalid operation."
 
-    button = digitalio.DigitalInOut(board.D2)
+    button = digitalio.DigitalInOut(button_pin)
     button.direction = digitalio.Direction.INPUT
     button.pull = digitalio.Pull.UP
 
