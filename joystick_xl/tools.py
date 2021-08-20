@@ -103,6 +103,7 @@ def TestHats(js: Joystick, pace: float = 0.25, quiet: bool = False) -> None:
 def TestConsole(button_pin: Pin = board.D2):
     """Run JoystickXL's REPL-based, built-in test console."""
     INVALID_OPERATION = "> Invalid operation."
+    PRESS_TIME = 0.25
 
     button = digitalio.DigitalInOut(button_pin)
     button.direction = digitalio.Direction.INPUT
@@ -166,7 +167,7 @@ def TestConsole(button_pin: Pin = board.D2):
                 continue
             print("> Axis", i + si, operation)
             js.update_axis((i, value))
-            time.sleep(1)
+            time.sleep(PRESS_TIME)
             js.update_axis((i, Axis.IDLE))
 
         # button functions
@@ -179,7 +180,7 @@ def TestConsole(button_pin: Pin = board.D2):
                 continue
             print("> Button", i + si, "CLICK")
             js.update_button((i, True))
-            time.sleep(1)
+            time.sleep(PRESS_TIME)
             js.update_button((i, False))
 
         # hat functions
@@ -190,6 +191,18 @@ def TestConsole(button_pin: Pin = board.D2):
             i = ValidateIndex(num, js.num_hats, "hat switch")
             if i < 0:
                 continue
+            elif "u" in cmd and "l" in cmd:
+                operation = "UP+LEFT"
+                value = Hat.UL
+            elif "u" in cmd and "r" in cmd:
+                operation = "UP+RIGHT"
+                value = Hat.UR
+            elif "d" in cmd and "l" in cmd:
+                operation = "DOWN+LEFT"
+                value = Hat.DL
+            elif "d" in cmd and "r" in cmd:
+                operation = "DOWN+RIGHT"
+                value = Hat.DR
             elif cmd.endswith("u"):
                 operation = "UP"
                 value = Hat.U
@@ -207,7 +220,7 @@ def TestConsole(button_pin: Pin = board.D2):
                 continue
             print("> Hat Switch", i + si, operation)
             js.update_hat((i, value))
-            time.sleep(1)
+            time.sleep(PRESS_TIME)
             js.update_hat((i, Hat.IDLE))
 
         # auto-test functions
