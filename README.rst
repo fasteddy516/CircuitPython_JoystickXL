@@ -92,7 +92,7 @@ Using JoystickXL
       import usb_hid
       from joystick_xl.hid import create_joystick
 
-      usb_hid.enable((create_joystick(axes=2, buttons=2, hats=1)),)
+      usb_hid.enable((create_joystick(axes=2, buttons=2, hats=1),))
 
 2. Use JoystickXL in ``code.py`` like this:
 
