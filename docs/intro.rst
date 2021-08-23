@@ -22,7 +22,7 @@ Description
 This CircuitPython driver simulates a *really big* USB HID joystick device - up
 to 8 axes, 128 buttons and 4 hat (POV) switches.  If you want to build a custom
 game controller with a lot of inputs - *I'm looking at you, space/flight sim
-pilots and racing sim drivers* - JoystickXL can help.
+pilots, racing sim drivers and virtual farmers* - JoystickXL can help.
 
 **Head over to the** :doc:`Getting Started </start>` **section to dive in!**
 
@@ -51,6 +51,11 @@ with the following games:
 * **Digital Combat Simulator (DCS) World** *(All inputs)*
 * **Forza Horizon 4** *(All inputs)*
 * **BeamNG.drive** *(Limited to 7 axes and 1 hat switch)*
+* **Farming Simulator 19** *(Limited to 7 axes, 24 buttons and 1 hat switch)*
+
+*Note that any game-specific input count limitations mentioned above are - to the
+best of my knowledge - a result of the game's joystick implementation, and are
+not unique to JoystickXL.*
 
 On **Linux**, a very limited amount of testing has been done on a Raspberry Pi
 4B using ``jstest`` (part of the ``joystick`` package).  The first 7 axes and
