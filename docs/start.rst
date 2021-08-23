@@ -76,7 +76,7 @@ CircuitPython REPL to fire up the JoystickXL test console:
 
 .. code-block:: text
 
-    Adafruit CircuitPython 7.0.0-alpha.5 on 2021-07-21; Adafruit QT Py M0 Haxpress with samd21e18
+    Adafruit CircuitPython 7.0.0-alpha.5 on 2021-07-21; Adafruit Trinket M0 with samd21e18
     >>> from joystick_xl.tools import TestConsole
     >>> TestConsole()
 
@@ -87,7 +87,7 @@ When the test console loads up, you will be greeted with the following:
     JoystickXL - Test Console
 
     Using 1-based indexing.
-    Button Clicks = 0.25s"
+    Button Clicks = 0.25s
     Enter command (? for list)
     :
 
