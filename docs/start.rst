@@ -93,7 +93,7 @@ When the test console loads up, you will be greeted with the following:
 
 From here, you can manually activate any axis, button or hat switch and see the
 results on the host device.  To see a list of available commands, type ``?`` at
-the prompt and press enter.  The avalable commands are:
+the prompt and press enter.  The available commands are:
 
 * ``a`` : **Axis commands**
   
@@ -167,12 +167,10 @@ as follows:
 
 .. code-block:: text
 
-    Adafruit CircuitPython 7.0.0-alpha.5 on 2021-07-21; Adafruit QT Py M0 Haxpress with samd21e18
+    Adafruit CircuitPython 7.0.0-alpha.5 on 2021-07-21; Adafruit Trinket M0 with samd21e18
     >>> import board
     >>> from joystick_xl.tools import TestConsole
     >>> TestConsole(button_pin = board.D7)
-
-
 
 .. seealso::
     
