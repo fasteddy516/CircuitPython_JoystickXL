@@ -10,7 +10,12 @@ import usb_hid  # type: ignore (this is a CircuitPython built-in)
 from joystick_xl import __version__
 
 
-def create_joystick(axes: int = 4, buttons: int = 16, hats: int = 1) -> usb_hid.Device:
+def create_joystick(
+    axes: int = 4,
+    buttons: int = 16,
+    hats: int = 1,
+    report_id: int = 0x04,
+) -> usb_hid.Device:
     """
     Create the ``usb_hid.Device`` required by ``usb_hid.enable()`` in ``boot.py``.
 
@@ -26,6 +31,8 @@ def create_joystick(axes: int = 4, buttons: int = 16, hats: int = 1) -> usb_hid.
     :type buttons: int, optional
     :param hats: The number of hat switches to support, from 0 to 4.  (Default is 1)
     :type hats: int, optional
+    :param report_id: The USB HID report ID number to use.  (Default is 4)
+    :type report_d: int, optional
     :return: A ``usb_hid.Device`` object with a descriptor identifying it as a joystick
         with the specified number of buttons, axes and hat switches.
     :rtype: ``usb_hid.Device``
@@ -55,7 +62,7 @@ def create_joystick(axes: int = 4, buttons: int = 16, hats: int = 1) -> usb_hid.
         0x05, 0x01,                         # : USAGE_PAGE (Generic Desktop)
         0x09, 0x04,                         # : USAGE (Joystick)
         0xA1, 0x01,                         # : COLLECTION (Application)
-        0x85, 0xFF,                         # :   REPORT_ID (Set at runtime, index=7)
+        0x85, report_id,                    # :   REPORT_ID (Default is 4)
     ))
 
     if _num_axes:
@@ -147,9 +154,9 @@ def create_joystick(axes: int = 4, buttons: int = 16, hats: int = 1) -> usb_hid.
         report_descriptor=bytes(_descriptor),
         usage_page=0x01,  # same as USAGE_PAGE from descriptor above
         usage=0x04,  # same as USAGE from descriptor above
-        in_report_length=_report_length,  # length (in bytes) of reports to host
-        out_report_length=0,  # length (in bytes) of reports from host
-        report_id_index=7,  # 0-based byte position of report id index in descriptor
+        report_ids=(report_id,),  # report ID defined in descriptor
+        in_report_lengths=(_report_length,),  # length of reports to host
+        out_report_lengths=(0,),  # length of reports from host
     )
 
 
