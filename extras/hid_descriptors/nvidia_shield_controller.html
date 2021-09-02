@@ -1,0 +1,916 @@
+<html><head>
+<title>USBlyzer Report</title>
+<style type="text/css">
+body {padding:0px 0px 0px 0px;background:#fff;color:#000;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:8pt;}
+th {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;background:#c9c9c9;color:#fff;text-align:left;font-size:8pt;font-weight:normal;vertical-align:bottom;border:#fff 1px solid;}
+td {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;background:#fff;vertical-align:top;font-size:8pt;}
+th.ud {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;background:#c9c9c9;color:#fff;text-align:left;font-size:8pt;font-weight:normal;vertical-align:bottom;border:#fff 1px solid;}
+td.ud {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;background:#fff;vertical-align:top;font-size:8pt;}
+td.udofs {padding-top:0px;padding-right:8px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;background:#fff;vertical-align:top;font-size:8pt;text-align:right;}
+td.udsiz {padding-top:0px;padding-right:8px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;background:#fff;vertical-align:top;font-size:8pt;text-align:right;}
+td.udval {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;background:#fff;vertical-align:top;font-size:8pt;text-align:right;}
+td.udfld {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;background:#fff;vertical-align:top;font-size:8pt;}
+td.udbmfld {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:20px;background:#fff;vertical-align:top;font-size:8pt;white-space:nowrap;}
+td.udhex {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;background:#fff;vertical-align:top;font-size:8pt;text-align:left;white-space:nowrap;}
+td.uddes {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;background:#fff;vertical-align:top;font-size:8pt;}
+div.uddiv1 {font-size:8pt;font-style:normal;text-decoration:none;margin-top:12px;margin-right:0px;margin-bottom:4px;margin-left:1px;text-align:left;}
+div.uddiv2 {font-size:8pt;font-style:normal;text-decoration:none;margin-top:4px;margin-right:0px;margin-bottom:4px;margin-left:12px;text-align:left;}
+div.uddiv3 {font-size:8pt;font-style:normal;text-decoration:none;margin-top:2px;margin-right:0px;margin-bottom:2px;margin-left:0px;text-align:left;}
+div.uddiv4 {font-size:8pt;font-style:normal;text-decoration:none;margin-top:2px;margin-right:0px;margin-bottom:2px;margin-left:20px;text-align:left;}
+div.uddiv5 {font-size:8pt;font-style:normal;text-decoration:none;margin-top:6px;margin-right:0px;margin-bottom:6px;margin-left:20px;text-align:left;}
+div.uddiv6 {font-size:8pt;font-style:normal;font-weight:bold;text-decoration:none;margin-top:12px;margin-right:0;margin-bottom:4px;margin-left:0;text-align:left;}
+div.uddiv7 {font-size:8pt;font-style:normal;font-weight:normal;text-decoration:none;margin-top:2px;margin-right:0;margin-bottom:4px;margin-left:0;text-align:left;}
+a {color:#000;text-decoration:none;white-space:nowrap;}
+a:link {color:#000;text-decoration:none;white-space:nowrap;}
+a:hover {color:#000;text-decoration:none;white-space:nowrap;}
+a:visited {color:#000;text-decoration:none;white-space:nowrap;}
+a:active {color:#000;text-decoration:none;white-space:nowrap;}
+a.totop {color:#ccc;font-family:"Courier New",Courier,mono;text-decoration:none;white-space:nowrap;margin-left:8px;}
+.error {color:#f00;}
+div.hrddiv1 {font-size:8pt;font-style:normal;text-decoration:none;margin-top:12px;margin-right:0px;margin-bottom:4px;margin-left:1px;text-align:left;}
+div.hrddiv2 {font-size:8pt;font-style:normal;text-decoration:none;margin-top:2px;margin-right:0px;margin-bottom:2px;margin-left:0px;text-align:left;}
+th.hrd {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;background-color:#c9c9c9;color:#fff;text-align:left;font-size:8pt;white-space:nowrap;vertical-align:bottom;border:#fff 1px solid;font-weight:normal;}
+td.hrdn {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;vertical-align:top;font-size:8pt;white-space:nowrap;background-color:#fff;}
+td.hrdm {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;vertical-align:top;font-size:8pt;text-align:left;white-space:nowrap;background-color:#fff;}
+td.hrdnin {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;vertical-align:top;font-size:8pt;white-space:nowrap;background-color:#e0ffe0;border:#e0ffe0 1px solid;}
+td.hrdmin {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;vertical-align:top;font-size:8pt;text-align:left;white-space:nowrap;background-color:#e0ffe0;border:#e0ffe0 1px solid;}
+td.hrdnout {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;vertical-align:top;font-size:8pt;white-space:nowrap;background-color:#ffe4e4;border:#ffe4e4 1px solid;}
+td.hrdmout {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;vertical-align:top;font-size:8pt;text-align:left;white-space:nowrap;background-color:#ffe4e4;border:#ffe4e4 1px solid;}
+td.hrdnfea {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;vertical-align:top;font-size:8pt;white-space:nowrap;background-color:#ffffd4;border:#ffffd4 1px solid;}
+td.hrdmfea {padding-top:0px;padding-right:3px;padding-bottom:0px;padding-left:3px;font-family:"Courier New",Courier,mono;vertical-align:top;font-size:8pt;text-align:left;white-space:nowrap;background-color:#ffffd4;border:#ffffd4 1px solid;}
+</style>
+</head>
+<body><a name="top"></a>
+<img src="./images/nvidia_shield.jpg" width="300px" height="auto"> 
+<p align="left" style="padding-top:3px;padding-right:3px;padding-bottom:0px;padding-left:3px;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:9pt;font-weight:bold;">&#x0055;&#x0053;&#x0042;&#x0020;&#x0049;&#x006E;&#x0070;&#x0075;&#x0074;&#x0020;&#x0044;&#x0065;&#x0076;&#x0069;&#x0063;&#x0065;</p>
+<table cellspacing="0">
+<tr vAlign="top"><td><b>Connection Status<b></td><td>Device connected</td></tr>
+<tr vAlign="top"><td><b>Current Configuration<b></td><td>1</td></tr>
+<tr vAlign="top"><td><b>Speed<b></td><td>Full (12 Mbit/s)</td></tr>
+<tr vAlign="top"><td><b>Device Address<b></td><td>5</td></tr>
+<tr vAlign="top"><td><b>Number Of Open Pipes<b></td><td>1</td></tr>
+</table>
+<div class="uddiv1"><a name="n8437f94000000000"><b>Device Descriptor</b> NVIDIA Controller v01.03</a></div>
+<table cellspacing="0">
+<tr valign="top"><th class="ud">Offset</th><th class="ud">Field</th><th class="ud">Size</th><th class="ud">Value</th><th class="ud">Description</th></tr>
+<tr valign="top">
+<td class="udofs">0</td>
+<td class="udfld"><nobr>bLength</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">12h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">1</td>
+<td class="udfld"><nobr>bDescriptorType</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">01h</td>
+<td class="uddes">Device</td>
+</tr>
+<tr valign="top">
+<td class="udofs">2</td>
+<td class="udfld"><nobr>bcdUSB</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">0200h</td>
+<td class="uddes">USB Spec 2.0</td>
+</tr>
+<tr valign="top">
+<td class="udofs">4</td>
+<td class="udfld"><nobr>bDeviceClass</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="uddes">Class info in Ifc Descriptors</td>
+</tr>
+<tr valign="top">
+<td class="udofs">5</td>
+<td class="udfld"><nobr>bDeviceSubClass</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">6</td>
+<td class="udfld"><nobr>bDeviceProtocol</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">7</td>
+<td class="udfld"><nobr>bMaxPacketSize0</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">08h</td>
+<td class="uddes">8 bytes</td>
+</tr>
+<tr valign="top">
+<td class="udofs">8</td>
+<td class="udfld"><nobr>idVendor</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">0955h</td>
+<td class="uddes">NVidia Corp.</td>
+</tr>
+<tr valign="top">
+<td class="udofs">10</td>
+<td class="udfld"><nobr>idProduct</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">7210h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">12</td>
+<td class="udfld"><nobr>bcdDevice</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">0100h</td>
+<td class="uddes">1.00</td>
+</tr>
+<tr valign="top">
+<td class="udofs">14</td>
+<td class="udfld"><nobr>iManufacturer</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">0Bh</td>
+<td class="uddes">"NVIDIA Corporation"</td>
+</tr>
+<tr valign="top">
+<td class="udofs">15</td>
+<td class="udfld"><nobr>iProduct</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">0Ch</td>
+<td class="uddes">"NVIDIA Controller v01.03"</td>
+</tr>
+<tr valign="top">
+<td class="udofs">16</td>
+<td class="udfld"><nobr>iSerialNumber</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">17</td>
+<td class="udfld"><nobr>bNumConfigurations</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">01h</td>
+<td class="ud"></td>
+</tr>
+</table>
+<div class="uddiv1"><a name="nc837f94000000000"><b>Configuration Descriptor 1</b> Bus Powered, 500 mA</a></div>
+<table cellspacing="0">
+<tr valign="top"><th class="ud">Offset</th><th class="ud">Field</th><th class="ud">Size</th><th class="ud">Value</th><th class="ud">Description</th></tr>
+<tr valign="top">
+<td class="udofs">0</td>
+<td class="udfld"><nobr>bLength</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">09h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">1</td>
+<td class="udfld"><nobr>bDescriptorType</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">02h</td>
+<td class="uddes">Configuration</td>
+</tr>
+<tr valign="top">
+<td class="udofs">2</td>
+<td class="udfld"><nobr>wTotalLength</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">0022h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">4</td>
+<td class="udfld"><nobr>bNumInterfaces</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">01h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">5</td>
+<td class="udfld"><nobr>bConfigurationValue</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">01h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">6</td>
+<td class="udfld"><nobr>iConfiguration</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">7</td>
+<td class="udfld"><nobr>bmAttributes</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">80h</td>
+<td class="uddes">Bus Powered</td>
+</tr>
+<tr valign="top">
+<td class="ud"></td>
+<td class="udbmfld"><nobr>4..0: Reserved</nobr></td>
+<td class="ud"></td>
+<td class="udval"><nobr>...00000&nbsp;</nobr></td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="ud"></td>
+<td class="udbmfld"><nobr>5: Remote Wakeup</nobr></td>
+<td class="ud"></td>
+<td class="udval"><nobr>..0.....&nbsp;</nobr></td>
+<td class="uddes">No</td>
+</tr>
+<tr valign="top">
+<td class="ud"></td>
+<td class="udbmfld"><nobr>6: Self Powered</nobr></td>
+<td class="ud"></td>
+<td class="udval"><nobr>.0......&nbsp;</nobr></td>
+<td class="uddes">No, Bus Powered</td>
+</tr>
+<tr valign="top">
+<td class="ud"></td>
+<td class="udbmfld"><nobr>7: Reserved (set to one)<br>(bus-powered for 1.0)</nobr></td>
+<td class="ud"></td>
+<td class="udval"><nobr>1.......&nbsp;</nobr></td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">8</td>
+<td class="udfld"><nobr>bMaxPower</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">FAh</td>
+<td class="uddes">500 mA</td>
+</tr>
+</table>
+<div class="uddiv2">
+<div class="uddiv1"><a name="n5937f94000000000"><b>Interface Descriptor 0/0</b>  HID, 1 Endpoint</a></div>
+<table cellspacing="0">
+<tr valign="top"><th class="ud">Offset</th><th class="ud">Field</th><th class="ud">Size</th><th class="ud">Value</th><th class="ud">Description</th></tr>
+<tr valign="top">
+<td class="udofs">0</td>
+<td class="udfld"><nobr>bLength</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">09h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">1</td>
+<td class="udfld"><nobr>bDescriptorType</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">04h</td>
+<td class="uddes">Interface</td>
+</tr>
+<tr valign="top">
+<td class="udofs">2</td>
+<td class="udfld"><nobr>bInterfaceNumber</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">3</td>
+<td class="udfld"><nobr>bAlternateSetting</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">4</td>
+<td class="udfld"><nobr>bNumEndpoints</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">01h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">5</td>
+<td class="udfld"><nobr>bInterfaceClass</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">03h</td>
+<td class="uddes">HID</td>
+</tr>
+<tr valign="top">
+<td class="udofs">6</td>
+<td class="udfld"><nobr>bInterfaceSubClass</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">7</td>
+<td class="udfld"><nobr>bInterfaceProtocol</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">8</td>
+<td class="udfld"><nobr>iInterface</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">0Eh</td>
+<td class="uddes">"Gamepad1 Device."</td>
+</tr>
+</table>
+<div class="uddiv2">
+<div class="uddiv1"><a name="ne937f94000000000"><b>HID Descriptor</b> </a></div>
+<table cellspacing="0">
+<tr valign="top"><th class="ud">Offset</th><th class="ud">Field</th><th class="ud">Size</th><th class="ud">Value</th><th class="ud">Description</th></tr>
+<tr valign="top">
+<td class="udofs">0</td>
+<td class="udfld"><nobr>bLength</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">09h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">1</td>
+<td class="udfld"><nobr>bDescriptorType</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">21h</td>
+<td class="uddes">HID</td>
+</tr>
+<tr valign="top">
+<td class="udofs">2</td>
+<td class="udfld"><nobr>bcdHID</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">0111h</td>
+<td class="uddes">1.11</td>
+</tr>
+<tr valign="top">
+<td class="udofs">4</td>
+<td class="udfld"><nobr>bCountryCode</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">00h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">5</td>
+<td class="udfld"><nobr>bNumDescriptors</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">01h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">6</td>
+<td class="udfld"><nobr>bDescriptorType</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">22h</td>
+<td class="uddes">Report</td>
+</tr>
+<tr valign="top">
+<td class="udofs">7</td>
+<td class="udfld"><nobr>wDescriptorLength</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">00F1h</td>
+<td class="uddes">241 bytes</td>
+</tr>
+</table>
+<div class="uddiv1"><a name="n7a37f94000000000"><b>Endpoint Descriptor 81</b>  1 In, Interrupt, 2 ms</a></div>
+<table cellspacing="0">
+<tr valign="top"><th class="ud">Offset</th><th class="ud">Field</th><th class="ud">Size</th><th class="ud">Value</th><th class="ud">Description</th></tr>
+<tr valign="top">
+<td class="udofs">0</td>
+<td class="udfld"><nobr>bLength</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">07h</td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">1</td>
+<td class="udfld"><nobr>bDescriptorType</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">05h</td>
+<td class="uddes">Endpoint</td>
+</tr>
+<tr valign="top">
+<td class="udofs">2</td>
+<td class="udfld"><nobr>bEndpointAddress</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">81h</td>
+<td class="uddes">1 In</td>
+</tr>
+<tr valign="top">
+<td class="udofs">3</td>
+<td class="udfld"><nobr>bmAttributes</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">03h</td>
+<td class="uddes">Interrupt</td>
+</tr>
+<tr valign="top">
+<td class="ud"></td>
+<td class="udbmfld"><nobr>1..0: Transfer Type</nobr></td>
+<td class="ud"></td>
+<td class="udval"><nobr>......11&nbsp;</nobr></td>
+<td class="uddes">Interrupt</td>
+</tr>
+<tr valign="top">
+<td class="ud"></td>
+<td class="udbmfld"><nobr>7..2: Reserved</nobr></td>
+<td class="ud"></td>
+<td class="udval"><nobr>000000..&nbsp;</nobr></td>
+<td class="ud"></td>
+</tr>
+<tr valign="top">
+<td class="udofs">4</td>
+<td class="udfld"><nobr>wMaxPacketSize</nobr></td>
+<td class="udsiz">2</td>
+<td class="udval">0040h</td>
+<td class="uddes">64 bytes</td>
+</tr>
+<tr valign="top">
+<td class="udofs">6</td>
+<td class="udfld"><nobr>bInterval</nobr></td>
+<td class="udsiz">1</td>
+<td class="udval">02h</td>
+<td class="uddes">2 ms</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="hrddiv1"><a name="n40e5d94000000000"><b>Interface 0 HID Report Descriptor</b> Game Pad</a></div>
+<table cellspacing="0">
+<tr>
+<th class="hrd">Item Tag (Value)</th>
+<th class="hrd">Raw Data</th>
+</tr>
+<tr>
+<td class="hrdn">Usage Page (Generic Desktop)</td>
+<td class="hrdm">05&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Logical Minimum (0)</td>
+<td class="hrdm">15&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Usage (Game Pad)</td>
+<td class="hrdm">09&nbsp;05&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Collection (Application)</td>
+<td class="hrdm">A1&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report ID (1)</td>
+<td class="hrdm">85&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Page (Button)</td>
+<td class="hrdm">05&nbsp;09&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Logical Minimum (0)</td>
+<td class="hrdm">15&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Logical Maximum (1)</td>
+<td class="hrdm">25&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Size (1)</td>
+<td class="hrdm">75&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Count (10)</td>
+<td class="hrdm">95&nbsp;0A&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 1)</td>
+<td class="hrdm">09&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 2)</td>
+<td class="hrdm">09&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 4)</td>
+<td class="hrdm">09&nbsp;04&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 5)</td>
+<td class="hrdm">09&nbsp;05&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 7)</td>
+<td class="hrdm">09&nbsp;07&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 8)</td>
+<td class="hrdm">09&nbsp;08&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 14)</td>
+<td class="hrdm">09&nbsp;0E&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 15)</td>
+<td class="hrdm">09&nbsp;0F&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 9)</td>
+<td class="hrdm">09&nbsp;09&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 12)</td>
+<td class="hrdm">09&nbsp;0C&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Page (Consumer Devices)</td>
+<td class="hrdm">05&nbsp;0C&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Count (6)</td>
+<td class="hrdm">95&nbsp;06&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Mute)</td>
+<td class="hrdm">09&nbsp;E2&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Volume Increment)</td>
+<td class="hrdm">09&nbsp;E9&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Volume Decrement)</td>
+<td class="hrdm">09&nbsp;EA&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Power)</td>
+<td class="hrdm">09&nbsp;30&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (AC Back)</td>
+<td class="hrdm">0A&nbsp;24&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (AC Home)</td>
+<td class="hrdm">0A&nbsp;23&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Page (Generic Desktop)</td>
+<td class="hrdm">05&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Hat Switch)</td>
+<td class="hrdm">09&nbsp;39&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Logical Maximum (7)</td>
+<td class="hrdm">25&nbsp;07&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Physical Minimum (0)</td>
+<td class="hrdm">35&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Physical Maximum (270)</td>
+<td class="hrdm">46&nbsp;0E&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Unit (Eng Rot: Degree)</td>
+<td class="hrdm">65&nbsp;14&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Size (4)</td>
+<td class="hrdm">75&nbsp;04&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Count (1)</td>
+<td class="hrdm">95&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Cnst,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;03&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Pointer)</td>
+<td class="hrdm">09&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Collection (Physical)</td>
+<td class="hrdm">A1&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Size (16)</td>
+<td class="hrdm">75&nbsp;10&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Count (4)</td>
+<td class="hrdm">95&nbsp;04&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Minimum (0)</td>
+<td class="hrdm">15&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Maximum (-1)</td>
+<td class="hrdm">26&nbsp;FF&nbsp;FF&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Minimum (0)</td>
+<td class="hrdm">35&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Maximum (-1)</td>
+<td class="hrdm">46&nbsp;FF&nbsp;FF&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (X)</td>
+<td class="hrdm">09&nbsp;30&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (Y)</td>
+<td class="hrdm">09&nbsp;31&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (Z)</td>
+<td class="hrdm">09&nbsp;32&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (Rz)</td>
+<td class="hrdm">09&nbsp;35&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Page (Simulation Controls)</td>
+<td class="hrdm">05&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Count (2)</td>
+<td class="hrdm">95&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (Brake)</td>
+<td class="hrdm">09&nbsp;C5&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (Accelerator)</td>
+<td class="hrdm">09&nbsp;C4&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;End Collection</td>
+<td class="hrdm">C0&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Collection (Application)</td>
+<td class="hrdm">A1&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Minimum (Flight Simulation Device)</td>
+<td class="hrdm">19&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Maximum (Tank Simulation Device)</td>
+<td class="hrdm">29&nbsp;03&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Maximum (-1)</td>
+<td class="hrdm">26&nbsp;FF&nbsp;FF&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Count (3)</td>
+<td class="hrdm">95&nbsp;03&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Size (16)</td>
+<td class="hrdm">75&nbsp;10&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Output</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,NVol,Bit)</td>
+<td class="hrdm">91&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;End Collection</td>
+<td class="hrdm">C0&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">End Collection</td>
+<td class="hrdm">C0&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Usage Page (Generic Desktop)</td>
+<td class="hrdm">05&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Usage (Mouse)</td>
+<td class="hrdm">09&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Collection (Application)</td>
+<td class="hrdm">A1&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report ID (2)</td>
+<td class="hrdm">85&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage (Pointer)</td>
+<td class="hrdm">09&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Collection (Physical)</td>
+<td class="hrdm">A1&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Page (Button)</td>
+<td class="hrdm">05&nbsp;09&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Minimum (Button 1)</td>
+<td class="hrdm">19&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Maximum (Button 3)</td>
+<td class="hrdm">29&nbsp;03&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Maximum (1)</td>
+<td class="hrdm">25&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Size (1)</td>
+<td class="hrdm">75&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Count (3)</td>
+<td class="hrdm">95&nbsp;03&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Page (Button)</td>
+<td class="hrdm">05&nbsp;09&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (Button 5)</td>
+<td class="hrdm">09&nbsp;05&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Count (1)</td>
+<td class="hrdm">95&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Size (4)</td>
+<td class="hrdm">75&nbsp;04&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Cnst,Ary,Abs)</td>
+<td class="hrdm">81&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage Page (Generic Desktop)</td>
+<td class="hrdm">05&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (X)</td>
+<td class="hrdm">09&nbsp;30&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usage (Y)</td>
+<td class="hrdm">09&nbsp;31&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Minimum (-127)</td>
+<td class="hrdm">15&nbsp;81&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Maximum (127)</td>
+<td class="hrdm">25&nbsp;7F&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Size (16)</td>
+<td class="hrdm">75&nbsp;10&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report Count (2)</td>
+<td class="hrdm">95&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Rel,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;06&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;End Collection</td>
+<td class="hrdm">C0&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">End Collection</td>
+<td class="hrdm">C0&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Usage Page (Vendor-Defined 223)</td>
+<td class="hrdm">06&nbsp;DE&nbsp;FF&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Usage (Vendor-Defined 1)</td>
+<td class="hrdm">09&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Collection (Application)</td>
+<td class="hrdm">A1&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Page</td>
+<td class="hrdm">05&nbsp;FF&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Minimum</td>
+<td class="hrdm">19&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Maximum</td>
+<td class="hrdm">29&nbsp;40&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report ID (253)</td>
+<td class="hrdm">85&nbsp;FD&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Logical Minimum (0)</td>
+<td class="hrdm">15&nbsp;00&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Logical Maximum (-1)</td>
+<td class="hrdm">25&nbsp;FF&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Count (64)</td>
+<td class="hrdm">95&nbsp;40&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Size (8)</td>
+<td class="hrdm">75&nbsp;08&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;<b>Input</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,Bit)</td>
+<td class="hrdm">81&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">End Collection</td>
+<td class="hrdm">C0&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Usage Page (Vendor-Defined 223)</td>
+<td class="hrdm">06&nbsp;DE&nbsp;FF&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Usage (Vendor-Defined 3)</td>
+<td class="hrdm">09&nbsp;03&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">Collection (Application)</td>
+<td class="hrdm">A1&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Minimum (Vendor-Defined 1)</td>
+<td class="hrdm">19&nbsp;01&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Usage Maximum (Vendor-Defined 64)</td>
+<td class="hrdm">29&nbsp;40&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report ID (252)</td>
+<td class="hrdm">85&nbsp;FC&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Count (64)</td>
+<td class="hrdm">95&nbsp;40&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;Report Size (8)</td>
+<td class="hrdm">75&nbsp;08&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">&nbsp;&nbsp;&nbsp;&nbsp;<b>Feature</b> (Data,Var,Abs,NWrp,Lin,Pref,NNul,NVol,Bit)</td>
+<td class="hrdm">B1&nbsp;02&nbsp;</td>
+</tr>
+<tr>
+<td class="hrdn">End Collection</td>
+<td class="hrdm">C0&nbsp;</td>
+</tr>
+</table>
+<p align="center" style="padding:0;color:#ccc;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:8pt;">This report was generated by <a style="color:#ccc;text-decoration:none;" href="http://www.usblyzer.com/">USBlyzer</a></p>
+</body>
+</html>
