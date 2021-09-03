@@ -37,6 +37,24 @@ on your device in order to use JoystickXL.**
 * There are no dependencies on any other CircuitPython drivers, libraries or modules.
 
 
+Limitations
+===========
+* A wired USB connection to the host device is required.  *Bluetooth
+  connectivity is not supported at this time.*
+
+* Axis data is reported with 8-bit resolution (values ranging from 0-255).
+
+* Only one JoystickXL device can be defined per CircuitPython board.  *You
+  cannot have a single board report as two or more independant joysticks.*
+
+* JoystickXL's reporting frequency - thus, input latency - is affected by
+  many factors, including processor speed, the number of inputs that need
+  to be processed, and the latency of any external input peripherals that
+  are being used.  The reporting frequency is going to be significantly
+  higher on a Metro M4 Express using on-board GPIO than it is on a QT-PY
+  using I2C/SPI-based I/O expanders. 
+  
+
 Host OS/Software Compatibility
 ==============================
 On **Windows 10**, all 8 axes 128 buttons and 4 hat switches are supported at
