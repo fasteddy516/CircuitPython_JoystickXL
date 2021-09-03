@@ -9,7 +9,7 @@ from microcontroller import Pin  # type: ignore
 from supervisor import runtime  # type: ignore
 
 from joystick_xl import __version__
-from joystick_xl.inputs import Axis, Hat
+from joystick_xl.inputs import Axis, Hat, VirtualInput
 from joystick_xl.joystick import Joystick
 
 
@@ -100,13 +100,9 @@ def TestHats(js: Joystick, pace: float = 0.25, quiet: bool = False) -> None:
         print("DONE")
 
 
-def TestConsole(button_pin: Pin = board.D2):
+def TestConsole(button_pin: Pin = None):
     """Run JoystickXL's REPL-based, built-in test console."""
     INVALID_OPERATION = "> Invalid operation."
-
-    button = digitalio.DigitalInOut(button_pin)
-    button.direction = digitalio.Direction.INPUT
-    button.pull = digitalio.Pull.UP
 
     js = Joystick()
     last_cmd = ""
@@ -133,6 +129,22 @@ def TestConsole(button_pin: Pin = board.D2):
     print("\nJoystickXL", __version__, "- Test Console\n")
     print("Using 1-based indexing.")
     print("Button Clicks = 0.25s")
+    print("Test Button = ", end="")
+    try:
+        # Attempt to configure a test button
+        if button_pin is None:
+            pin = board.D2
+        else:
+            pin = button_pin
+        button = digitalio.DigitalInOut(pin)
+        button.direction = digitalio.Direction.INPUT
+        button.pull = digitalio.Pull.UP
+        print(pin)
+    except AttributeError:
+        # Fall back to a VirtualInput if button assignment fails
+        button = VirtualInput(value=True)
+        print("(Not Assigned)")
+
     print("Enter command (? for list)")
 
     while True:
