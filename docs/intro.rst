@@ -30,7 +30,7 @@ pilots, racing sim drivers and virtual farmers* - JoystickXL can help.
 Requirements
 ============
 *This driver relies on features that were introduced in CircuitPython
-version 7.0.0.*  **You must be running CircuitPython 7.0.0-beta.1 or newer
+version 7.0.0.*  **You must be running CircuitPython 7.0.0-rc.1 or newer
 on your device in order to use JoystickXL.**
 
 * This driver was made for devices running `Adafruit CircuitPython <https://www.adafruit.com/circuitpython>`_.
@@ -49,11 +49,12 @@ with the following games:
 * **Elite Dangerous** *(Limited to 32 buttons)*
 * **Star Citizen** *(All inputs)*
 * **Digital Combat Simulator (DCS) World** *(All inputs)*
+* **EverSpace 2** *(All inputs - hat switches are considered to be axes)*
 * **Forza Horizon 4** *(All inputs)*
 * **BeamNG.drive** *(Limited to 7 axes and 1 hat switch)*
 * **Farming Simulator 19** *(Limited to 7 axes, 24 buttons and 1 hat switch)*
 
-*Note that any game-specific input count limitations mentioned above are - to the
+*Note that any game-specific input limitations mentioned above are - to the
 best of my knowledge - a result of the game's joystick implementation, and are
 not unique to JoystickXL.*
 
