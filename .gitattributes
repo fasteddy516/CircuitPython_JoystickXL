@@ -1,0 +1,2 @@
+# Prevent HTML files from being detected as the project language.
+*.html linguist-vendored
