@@ -12,7 +12,7 @@ JoystickXL for CircuitPython
     :target: https://circuitpython-joystickxl.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://open.vscode.dev/badges/open-in-vscode.svg
+.. image:: https://img.shields.io/static/v1?logo=visualstudiocode&label=&message=Open%20in%20Visual%20Studio%20Code&labelColor=2c2c32&color=007acc&logoColor=007acc
     :target: https://open.vscode.dev/fasteddy516/CircuitPython_JoystickXL
     :alt: Open in Visual Studio Code
 
