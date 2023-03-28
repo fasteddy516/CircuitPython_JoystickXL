@@ -91,7 +91,7 @@ class Joystick:
         self._axis_states = list()
         for _ in range(self.num_axes):
             self._axis_states.append(Axis.IDLE)
-            self._format += "B"
+            self._format += "H"
 
         self.hat = list()
         """List of hat inputs associated with this joystick through ``add_input``."""
@@ -136,7 +136,7 @@ class Joystick:
         if axis + 1 > Joystick._num_axes:
             raise ValueError("Specified axis is out of range.")
         if not Axis.MIN <= value <= Axis.MAX:
-            raise ValueError("Axis value must be in range 0 to 255")
+            raise ValueError(f"Axis value must be in range {Axis.MIN} to {Axis.MAX}")
         return True
 
     @staticmethod
@@ -241,7 +241,6 @@ class Joystick:
 
         # Generate a USB HID report.
         report_data = list()
-
         report_data.extend(self._axis_states)
 
         if self.num_hats:

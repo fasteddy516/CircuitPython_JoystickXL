@@ -37,10 +37,10 @@ class Axis:
     MIN = 0
     """Lowest possible axis value for USB HID reports."""
 
-    MAX = 255
+    MAX = (1 << 16) - 1
     """Highest possible axis value for USB HID reports."""
 
-    IDLE = 128
+    IDLE = 1 << 15
     """Idle/Center axis value for USB HID reports."""
 
     X = 0
@@ -236,16 +236,11 @@ class Axis:
         new_value = min(max(self._source.value, self._min), self._max)
 
         # account for deadband
-        if new_value < (self._raw_midpoint - self._deadband):
-            new_value -= self._min
-        elif new_value > (self._raw_midpoint + self._deadband):
-            new_value = new_value - self._min - (self._deadband * 2)
-        else:
-            new_value = self._db_range // 2
+        if new_value >= self._raw_midpoint - self._deadband and \
+           new_value <= self._raw_midpoint + self._deadband:
+           new_value = self._raw_midpoint
 
-        # calculate scaled joystick-compatible value and clamp to 0-255
-        self._value = min(new_value * 256 // self._db_range, 255)
-
+        self._value = new_value
         return self._value
 
 
