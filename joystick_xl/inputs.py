@@ -246,6 +246,9 @@ class Axis:
         # calculate scaled joystick-compatible value and clamp to 0-255
         self._value = min(new_value * 256 // self._db_range, 255)
 
+        if self._invert == -1:
+            self._value = 255 - self._value
+
         return self._value
 
 
