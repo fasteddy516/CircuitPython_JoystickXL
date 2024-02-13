@@ -140,7 +140,7 @@ class Axis:
         :return: ``True`` if inverted, ``False`` otherwise
         :rtype: bool
         """
-        return self._invert < 0
+        return self._invert
 
     def __init__(
         self,
@@ -187,10 +187,7 @@ class Axis:
         self._deadband = deadband
         self._min = min
         self._max = max
-        if invert:
-            self._invert = -1
-        else:
-            self._invert = 1
+        self._invert = invert
         self._value = Axis.IDLE
         self._last_source_value = Axis.IDLE
 
@@ -242,6 +239,10 @@ class Axis:
             new_value = new_value - self._min - (self._deadband * 2)
         else:
             new_value = self._db_range // 2
+
+        # invert the axis if necessary
+        if self._invert:
+            new_value = 65535 - new_value
 
         # calculate scaled joystick-compatible value and clamp to 0-255
         self._value = min(new_value * 256 // self._db_range, 255)
