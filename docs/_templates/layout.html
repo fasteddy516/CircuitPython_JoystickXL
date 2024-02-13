@@ -3,6 +3,8 @@
   {% block menu %}
     {{ super() }}
     <p class="caption" role="heading"><span class="caption-text">Index</span></p>
-    <a href= "{{pathto('genindex.html', 1)}}">General</a>
-    <a href= "{{pathto('py-modindex.html', 1)}}">Modules</a>
+    <ul>
+      <li class="toctree-l1"><a href= "{{pathto('genindex.html', 1)}}">General</a></li>
+      <li class="toctree-l1"><a href= "{{pathto('py-modindex.html', 1)}}">Modules</a></li>
+    </ul>
   {% endblock %}
