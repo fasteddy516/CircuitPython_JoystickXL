@@ -9,7 +9,7 @@ Create extra large (high input count) USB HID control devices with CircuitPython
 MIT License
 =============================
 
-Copyright (c) 2021 Edward Wright
+Copyright (c) 2024 Edward Wright
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,4 +31,4 @@ SOFTWARE.
 
 """
 
-__version__ = "0.4.1"
+__version__ = "0.4.2"

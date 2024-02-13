@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "JoystickXL for CircuitPython"
-copyright = "2021 Edward Wright"
+copyright = "2024 Edward Wright"
 author = "Edward Wright"
 
 
