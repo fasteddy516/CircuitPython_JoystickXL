@@ -101,7 +101,7 @@ If you look closely, you'll notice that the only really *complicated* parts
 of this example are the bits that deal with the serial communications and the
 associated data processing.  Everything else is almost identical to the
 *Start Simple* example above - create a JoystickXL object, associate inputs with it
-and make sure you call the jooystick's ``update()`` method in your main loop.
+and make sure you call the joystick's ``update()`` method in your main loop.
 
 .. literalinclude:: ../examples/7_hotas/stick/code.py
 .. literalinclude:: ../examples/7_hotas/throttle/code.py
