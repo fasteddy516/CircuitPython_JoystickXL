@@ -216,13 +216,18 @@ class Joystick:
             else:
                 raise TypeError("Input must be a Button, Axis or Hat object.")
 
-    def update(self, always: bool = False) -> None:
+    def update(self, always: bool = False, halt_on_error: bool = False) -> None:
         """
-        Update all inputs in associated input lists and generate a USB HID.
+        Update all inputs in associated input lists and generate a USB HID report.
 
         :param always: When ``True``, send a report even if it is identical to the last
-           report that was sent out.  Defaults to ``False``.
+            report that was sent out.  Defaults to ``False``.
         :type always: bool, optional
+        :param halt_on_error: When ``True``, an exception will be raised and the program
+            will halt if an ``OSError`` occurs when the report is sent.  When ``False``,
+            the report will simply be dropped and no exception will be raised.  Defaults
+            to ``False``.
+        :type halt_on_error: bool, optional
         """
         # Update axis values but defer USB HID report generation.
         if len(self.axis):
@@ -256,8 +261,14 @@ class Joystick:
 
         # Send the USB HID report if required.
         if always or self._last_report != self._report:
-            self._device.send_report(self._report)
-            self._last_report[:] = self._report
+            try:
+                self._device.send_report(self._report)
+                self._last_report[:] = self._report
+            except OSError:
+                # This can occur if the USB is busy, or the host never properly
+                # connected to the USB device.  We just drop the update and try later.
+                if halt_on_error:
+                    raise
 
     def reset_all(self) -> None:
         """Reset all inputs to their idle states."""
