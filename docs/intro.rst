@@ -30,13 +30,17 @@ pilots, racing sim drivers and virtual farmers* - JoystickXL can help.
 Requirements
 ============
 *This driver relies on features that were introduced in CircuitPython
-version 7.0.0.*  **You must be running CircuitPython 7.0.0-rc.1 or newer
+version 7.x*  **You must be running CircuitPython 7.0.0 or newer
 on your device in order to use JoystickXL.**
 
 * This driver was made for devices running `Adafruit CircuitPython <https://www.adafruit.com/circuitpython>`_.
   For a list of compatible devices, see `circuitpython.org <https://circuitpython.org/downloads>`_.
 
 * There are no dependencies on any other CircuitPython drivers, libraries or modules.
+
+* Pre-compiled (``.mpy``) versions of JoystickXL are available in the `releases <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases>`_
+  section for CircuitPython versions 8.x and 9.x.
+
 
 
 Limitations

@@ -1,6 +1,8 @@
 Installation
 ============
-1. Download the `latest release of JoystickXL <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>`_.
+1. Download the `latest release of JoystickXL <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases/latest>`_
+   that corresponds to the version of CircuitPython you're running.  (i.e.
+   ``joystick_xl_x.x.x_cp8`` for CircuitPython 8.x)
 2. Extract the files from the downloaded .zip archive.
 3. Copy the ``joystick_xl`` folder to the ``lib`` folder on your device's
    ``CIRCUITPY`` drive.
