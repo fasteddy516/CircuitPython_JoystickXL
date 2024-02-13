@@ -101,7 +101,13 @@ def TestHats(js: Joystick, pace: float = 0.25, quiet: bool = False) -> None:
 
 
 def TestConsole(button_pin: Pin = None):
-    """Run JoystickXL's REPL-based, built-in test console."""
+    """
+    Run JoystickXL's REPL-based, built-in test console.
+
+    :param button_pin: Specify the pin to use as TestConsole's test button.  Defaults
+        to ``board.D2`` (``board.GP2`` on RP2040-based devices).
+    :type button_pin: microcontroller.Pin, optional
+    """
     INVALID_OPERATION = "> Invalid operation."
 
     js = Joystick()
@@ -133,7 +139,12 @@ def TestConsole(button_pin: Pin = None):
     try:
         # Attempt to configure a test button
         if button_pin is None:
-            pin = board.D2
+            try:
+                # for most CircuitPython boards
+                pin = board.D2
+            except AttributeError:
+                # for RP2040-based boards
+                pin = board.GP2
         else:
             pin = button_pin
         button = digitalio.DigitalInOut(pin)

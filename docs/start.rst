@@ -88,6 +88,7 @@ When the test console loads up, you will be greeted with the following:
 
     Using 1-based indexing.
     Button Clicks = 0.25s
+    Test Button = board.D2
     Enter command (? for list)
     :
 
@@ -157,13 +158,13 @@ in-game.
 joystick events** it will not capture events generated from the test console
 because your serial terminal will be in-focus while you are typing in it.
 For cases like these, the test console provides a single digital input - by
-default on pin ``D2`` - which will repeat the last typed command when activated.
-You can either hook up an actual button, or just short ``D2`` to ground to
-trigger commands as needed.  In the game example above, you would enter the
-desired command in the test console and press enter, then switch to the game
-and use the button input to trigger that command while the game is in focus.
-If needed, the button pin can also be changed when the test console is started
-as follows:
+default on pin ``D2`` (``GP2`` on RP2040-based devices) - which will repeat
+the last typed command when activated. You can either hook up an actual
+button, or just short the pin to ground to trigger commands as needed.  In
+the game example above, you would enter the desired command in the test
+console and press enter, then switch to the game and use the button input to
+trigger that command while the game is in focus. If needed, the button pin
+can also be changed when the test console is started as follows:
 
 .. code-block:: text
 
