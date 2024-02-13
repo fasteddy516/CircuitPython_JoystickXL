@@ -57,7 +57,7 @@ Limitations
 
 Host OS/Software Compatibility
 ==============================
-On **Windows 10**, all 8 axes 128 buttons and 4 hat switches are supported at
+On **Windows 10/11**, all 8 axes 128 buttons and 4 hat switches are supported at
 the operating system level, and JoystickXL has been tested and confirmed to work
 with the following games:
 
@@ -111,7 +111,15 @@ Using JoystickXL
       import usb_hid
       from joystick_xl.hid import create_joystick
 
-      usb_hid.enable((create_joystick(axes=2, buttons=2, hats=1),))
+      # enable default CircuitPython USB HID devices as well as JoystickXL
+      usb_hid.enable(
+        (
+          usb_hid.Device.KEYBOARD,
+          usb_hid.Device.MOUSE,
+          usb_hid.Device.CONSUMER_CONTROL,
+          create_joystick(axes=2, buttons=2, hats=1),
+        )
+      )
 
 2. Use JoystickXL in ``code.py`` like this:
 
