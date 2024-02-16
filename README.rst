@@ -37,7 +37,7 @@ on your device in order to use JoystickXL.**
 * There are no dependencies on any other CircuitPython drivers, libraries or modules.
 
 * Pre-compiled (``.mpy``) versions of JoystickXL are available in the `releases <https://github.com/fasteddy516/CircuitPython_JoystickXL/releases>`_
-  section for CircuitPythons version 8.x and 9.x.  
+  section for CircuitPython versions 8.x and 9.x.  
 
 
 Limitations
