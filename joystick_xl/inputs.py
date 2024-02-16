@@ -224,7 +224,8 @@ class Axis:
             raise TypeError("Incompatible axis source specified.")
 
     def _update(self) -> int:
-        """Read raw input data and convert it to a joystick-compatible value.
+        """
+        Read raw input data and convert it to a joystick-compatible value.
 
         :return: ``0`` to ``255``, ``128`` if idle/centered.
         :rtype: int
