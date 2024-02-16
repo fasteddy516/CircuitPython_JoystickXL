@@ -12,9 +12,12 @@ except ImportError:
     pass
 
 # These are all CircuitPython built-ins
-from analogio import AnalogIn  # type: ignore
-from digitalio import DigitalInOut, Direction, Pull  # type: ignore
-from microcontroller import Pin  # type: ignore
+try:
+    from analogio import AnalogIn  # type: ignore
+    from digitalio import DigitalInOut, Direction, Pull  # type: ignore
+    from microcontroller import Pin  # type: ignore
+except ImportError:
+    print("*** WARNING: CircuitPython built-in modules could not be imported. ***")
 
 
 class VirtualInput:
