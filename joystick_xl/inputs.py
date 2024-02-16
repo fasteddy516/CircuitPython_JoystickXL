@@ -230,11 +230,16 @@ class Axis:
         :return: ``0`` to ``255``, ``128`` if idle/centered.
         :rtype: int
         """
-        if self._source.value == self._last_source_value:
+        source_value = self._source.value
+
+        # short-circuit processing if the source value hasn't changed
+        if source_value == self._last_source_value:
             return self._value
 
+        self._last_source_value = source_value
+
         # clamp raw input value to specified min/max
-        new_value = min(max(self._source.value, self._min), self._max)
+        new_value = min(max(source_value, self._min), self._max)
 
         # account for deadband
         if new_value < (self._raw_midpoint - self._deadband):
