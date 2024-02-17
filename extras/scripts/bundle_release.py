@@ -52,6 +52,6 @@ for v in CP_VERSIONS:
             for f in bundle_files:
                 zip_file.write(f, f"joystick_xl/{f.name}")
         cleanup(["*.mpy"])
+        print(f"+ Created {bundle_file.name} for CircuitPython {v}")
     except FileNotFoundError:
         print(f"*** ERROR: mpy-cross{v}.exe not found, skipping CircuitPython {v}")
-    print(f"+ Created {bundle_file.name} for CircuitPython {v}")
