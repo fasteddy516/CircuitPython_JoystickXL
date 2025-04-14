@@ -12,6 +12,7 @@ from joystick_xl import __version__
 
 def create_joystick(
     axes: int = 4,
+    axes16: int = 0,
     buttons: int = 16,
     hats: int = 1,
     report_id: int = 0x04,
@@ -39,13 +40,20 @@ def create_joystick(
 
     """
     _num_axes = axes
+    _num_axes16 = axes16
     _num_buttons = buttons
     _num_hats = hats
 
     # Validate the number of configured axes, buttons and hats.
     if _num_axes < 0 or _num_axes > 8:
         raise ValueError("Axis count must be from 0-8.")
-
+    
+    if _num_axes16 < 0 or _num_axes16 > 8:
+        raise ValueError("Axis 16 count must be from 0-8.")
+    
+    if _num_axes + _num_axes16 > 8:
+        raise ValueError("Total axis count must be from 0-8.")
+    
     if _num_buttons < 0 or _num_buttons > 128:
         raise ValueError("Button count must be from 0-128.")
 
@@ -80,6 +88,23 @@ def create_joystick(
         )))
 
         _report_length = _num_axes
+
+
+    if _num_axes16:
+        for i in range(_num_axes16):
+            _descriptor.extend(bytes((
+                0x09, min(0x30 + i + _num_axes, 0x36)   # :     USAGE (X,Y,Z,Rx,Ry,Rz,S0,S1)
+            )))
+
+        _descriptor.extend(bytes((
+            0x15, 0x00,                     # :     LOGICAL_MINIMUM (0)
+            0x26, 0xFF, 0xFF,               # :     LOGICAL_MAXIMUM (65535)
+            0x75, 0x10,                     # :     REPORT_SIZE (16)
+            0x95, _num_axes16,                # :     REPORT_COUNT (num_axes)
+            0x81, 0x02,                     # :     INPUT (Data,Var,Abs)
+        )))
+
+        _report_length += 2*_num_axes16
 
     if _num_hats:
         for i in range(_num_hats):
@@ -142,6 +167,8 @@ def create_joystick(
         "with",
         _num_axes,
         "axes,",
+        _num_axes16,
+        "hd axes,",
         _num_buttons,
         "buttons and",
         _num_hats,
