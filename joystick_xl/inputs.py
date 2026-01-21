@@ -261,6 +261,233 @@ class Axis:
         return self._value
 
 
+
+class Axis16:
+    """Data source storage and scaling/deadband processing for an axis input."""
+
+    MIN = 0
+    """Lowest possible axis value for USB HID reports."""
+
+    MAX = 65535
+    """Highest possible axis value for USB HID reports."""
+
+    IDLE = 32768
+    """Idle/Center axis value for USB HID reports."""
+
+    X = 0
+    """Alias for the X-axis index."""
+
+    Y = 1
+    """Alias for the Y-axis index."""
+
+    Z = 2
+    """Alias for the Z-axis index."""
+
+    RX = 3
+    """Alias for the RX-axis index."""
+
+    RY = 4
+    """Alias for the RY-axis index."""
+
+    RZ = 5
+    """Alias for the RZ-axis index."""
+
+    S0 = 6
+    """Alias for the S0-axis index."""
+
+    S1 = 7
+    """Alias for the S1-axis index."""
+
+    @property
+    def value(self) -> int:
+        """
+        Get the current, fully processed value of this axis.
+
+        :return: ``0`` to ``65535``, ``32768`` if idle/centered or bypassed.
+        :rtype: int
+        """
+        new_value = self._update()
+
+        if self.bypass:
+            return Axis.IDLE
+        else:
+            return new_value
+
+    @property
+    def source_value(self) -> int:
+        """
+        Get the raw source input value.
+
+        *(For VirtualInput sources, this property can also be set.)*
+
+        :return: ``0`` to ``65535``
+        :rtype: int
+        """
+        return self._source.value
+
+    @source_value.setter
+    def source_value(self, value: int) -> None:
+        """Set the raw source value for a VirtualInput axis source."""
+        if isinstance(self._source, VirtualInput):
+            self._source.value = value
+        else:
+            raise TypeError("Only VirtualInput source values can be set manually.")
+
+    @property
+    def min(self) -> int:
+        """
+        Get the configured minimum raw ``analogio`` input value.
+
+        :return: ``0`` to ``65535``
+        :rtype: int
+        """
+        return self._min
+
+    @property
+    def max(self) -> int:
+        """
+        Get the configured maximum raw ``analogio`` input value.
+
+        :return: ``0`` to ``65535``
+        :rtype: int
+        """
+        return self._max
+
+    @property
+    def deadband(self) -> int:
+        """
+        Get the raw, absolute value of the configured deadband.
+
+        :return: ``0`` to ``65535``
+        :rtype: int
+        """
+        return self._deadband
+
+    @property
+    def invert(self) -> bool:
+        """
+        Return ``True`` if the raw `analogio` input value is inverted.
+
+        :return: ``True`` if inverted, ``False`` otherwise
+        :rtype: bool
+        """
+        return self._invert
+
+    def __init__(
+        self,
+        source=None,
+        deadband: int = 0,
+        min: int = 0,
+        max: int = 65535,
+        invert: bool = False,
+        bypass: bool = False,
+    ) -> None:
+        """
+        Provide data source storage and scaling/deadband processing for an axis input.
+
+        :param source: CircuitPython pin identifier (i.e. ``board.A0``) or any object
+            with an int ``.value`` attribute.  (Defaults to ``None``, which will create
+            a ``VirtualInput`` source instead.)
+        :type source: Any, optional
+        :param deadband: Raw, absolute value of the deadband to apply around the
+           midpoint of the raw source value.  The deadband is used to prevent an axis
+           from registering minimal values when it is centered.  Setting the deadband
+           value to ``250`` means raw input values +/- 250 from the midpoint will all
+           be treated as the midpoint.  (defaults to ``0``)
+        :type deadband: int, optional
+        :param min: The raw input value that corresponds to a scaled axis value of 0.
+           Any raw input value <= to this value will get scaled to 0.  Useful if the
+           component used to generate the raw input never actually reaches 0.
+           (defaults to ``0``)
+        :type min: int, optional
+        :param max: The raw input value that corresponds to a scaled axis value of 255.
+           Any raw input value >= to this value will get scaled to 255.  Useful if the
+           component used to generate the raw input never actually reaches 65535.
+           (defaults to ``65535``)
+        :type max: int, optional
+        :param invert: Set to ``True`` to invert the scaled axis value.  Useful if the
+           physical orientation of the component used to generate the raw axis input
+           does not match the logical direction of the axis input.
+           (defaults to ``False``)
+        :type invert: bool, optional
+        :param bypass: Set to ``True`` to make the axis always appear ``centered``
+            in USB HID reports back to the host device.  (Defaults to ``False``)
+        :type bypass: bool, optional
+        """
+        self._source = Axis._initialize_source(source)
+        self._deadband = deadband
+        self._min = min
+        self._max = max
+        self._invert = invert
+        self._value = Axis.IDLE
+        self._last_source_value = Axis.IDLE
+
+        self.bypass = bypass
+        """Set to ``True`` to make the axis always appear idle/centered."""
+
+        # calculate raw input midpoint and scaled deadband range
+        self._raw_midpoint = self._min + ((self._max - self._min) // 2)
+        self._db_range = self._max - self._min - (self._deadband * 2) + 1
+
+        self._update()
+
+    @staticmethod
+    def _initialize_source(source):
+        """
+        Configure a source as an on-board pin, off-board input or VirtualInput.
+
+        :param source: CircuitPython pin identifier (i.e. ``board.A3``), any object
+            with an int ``.value`` attribute or a ``VirtualInput`` object.
+        :type source: Any
+        :return: A fully configured analog source pin or virtual input.
+        :rtype: AnalogIn or VirtualInput
+        """
+        if source is None:
+            return VirtualInput(value=32768)
+        elif isinstance(source, Pin):
+            return AnalogIn(source)
+        elif hasattr(source, "value") and isinstance(source.value, int):
+            return source
+        else:
+            raise TypeError("Incompatible axis source specified.")
+
+    def _update(self) -> int:
+        """
+        Read raw input data and convert it to a joystick-compatible value.
+
+        :return: ``0`` to ``65535``, ``32768`` if idle/centered.
+        :rtype: int
+        """
+        source_value = self._source.value
+
+        # short-circuit processing if the source value hasn't changed
+        if source_value == self._last_source_value:
+            return self._value
+
+        self._last_source_value = source_value
+
+        # clamp raw input value to specified min/max
+        new_value = min(max(source_value, self._min), self._max)
+
+        # account for deadband
+        if new_value < (self._raw_midpoint - self._deadband):
+            new_value -= self._min
+        elif new_value > (self._raw_midpoint + self._deadband):
+            new_value = new_value - self._min - (self._deadband * 2)
+        else:
+            new_value = self._db_range // 2
+
+        # calculate scaled joystick-compatible value and clamp to 0-255
+        new_value = min(new_value * 65536 // self._db_range, 65535)
+
+        # invert the axis if necessary
+        if self._invert:
+            self._value = 65535 - new_value
+        else:
+            self._value = new_value
+
+        return self._value
+
 class Button:
     """Data source storage and value processing for a button input."""
 
