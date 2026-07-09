@@ -15,7 +15,7 @@ except ImportError:
     pass
 
 from joystick_xl.hid import _get_device
-from joystick_xl.inputs import Axis, Button, Hat
+from joystick_xl.inputs import Axis, Axis16, Button, Hat
 
 
 class Joystick:
@@ -23,6 +23,9 @@ class Joystick:
 
     _num_axes = 0
     """The number of axes this joystick can support."""
+
+    _num_axes16 = 0
+    """The number of hd axes this joystick can support."""
 
     _num_buttons = 0
     """The number of buttons this joystick can support."""
@@ -37,6 +40,11 @@ class Joystick:
     def num_axes(self) -> int:
         """Return the number of available axes in the USB HID descriptor."""
         return self._num_axes
+
+    @property
+    def num_axes16(self) -> int:
+        """Return the number of available hd axes in the USB HID descriptor."""
+        return self._num_axes16
 
     @property
     def num_buttons(self) -> int:
@@ -71,9 +79,10 @@ class Joystick:
                         if len(config) < 4:
                             raise (ValueError)
                         Joystick._num_axes = config[0]
-                        Joystick._num_buttons = config[1]
-                        Joystick._num_hats = config[2]
-                        Joystick._report_size = config[3]
+                        Joystick._num_axes16 = config[1]
+                        Joystick._num_buttons = config[2]
+                        Joystick._num_hats = config[3]
+                        Joystick._report_size = config[4]
                         break
             if Joystick._report_size == 0:
                 raise (ValueError)
@@ -92,6 +101,9 @@ class Joystick:
         for _ in range(self.num_axes):
             self._axis_states.append(Axis.IDLE)
             self._format += "B"
+        for _ in range(self.num_axes16):
+            self._axis_states.append(Axis.IDLE)
+            self._format += "H"
 
         self.hat = list()
         """List of hat inputs associated with this joystick through ``add_input``."""
@@ -136,7 +148,7 @@ class Joystick:
         if axis + 1 > Joystick._num_axes:
             raise ValueError("Specified axis is out of range.")
         if not Axis.MIN <= value <= Axis.MAX:
-            raise ValueError("Axis value must be in range 0 to 255")
+            raise ValueError("Axis value must be in range valid range")
         return True
 
     @staticmethod
@@ -203,6 +215,11 @@ class Joystick:
                     self.axis.append(i)
                 else:
                     raise OverflowError("List is full, cannot add another axis.")
+            if isinstance(i, Axis16):
+                if len(self.axis) < self._num_axes + self._num_axes16:
+                    self.axis.append(i)
+                else:
+                    raise OverflowError("List is full, cannot add another axis 16.")
             elif isinstance(i, Button):
                 if len(self.button) < self._num_buttons:
                     self.button.append(i)
