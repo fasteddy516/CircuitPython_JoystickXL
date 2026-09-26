@@ -33,10 +33,11 @@ DE-9 - Board
 8 - axis_0
 
 9 - VCC
+
+Special thanks to https://github.com/dmadison/Sim-Racing-Arduino/ 's documentation.
 """
 
 import json
-import sys
 import time
 
 import analogio
@@ -45,14 +46,14 @@ import digitalio
 from joystick_xl.inputs import Button
 from joystick_xl.joystick import Joystick
 
-positions = (
-    (56077, 18644),
-    (4145, 18196),
-    (57678, 33080),
-    (3152, 32391),
-    (56909, 48667),
-    (3584, 48731),
-)
+positions = [
+    [18580, 55181],
+    [18324, 2480],
+    [32824, 55389],
+    [32840, 944],
+    [49244, 55213],
+    [48043, 1200],
+]
 
 
 NEUTRAL_DISTANCE = 8192
@@ -80,7 +81,7 @@ def calibrate():
         input(f"Shift to {i}")
         positions.append((axis_0.value, axis_1.value))
 
-    sys.stdout.write(json.dumps(positions))
+    print(json.dumps(positions))
 
 
 def find_gear():
@@ -94,6 +95,8 @@ def find_gear():
             gear = i
 
     if min_distance < NEUTRAL_DISTANCE:
+        if gear == 5 and reverse.value:
+            gear = 6
         return gear
     return -1
 
@@ -110,9 +113,7 @@ while True:
         gear = new_gear
         print(f"Gear {gear}")
         print(f"Reverse {reverse.value}")
-
-        if gear == 5 and reverse.value:
-            gear = 6
+        print("Position", (axis_0.value, axis_1.value))
 
         for i, button in enumerate(buttons):
             # False is "pressed"
