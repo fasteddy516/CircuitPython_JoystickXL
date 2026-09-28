@@ -47,16 +47,17 @@ from joystick_xl.inputs import Button
 from joystick_xl.joystick import Joystick
 
 positions = [
-    [18580, 55181],
-    [18324, 2480],
-    [32824, 55389],
-    [32840, 944],
-    [49244, 55213],
-    [48043, 1200],
+    [54349, 20949],
+    [4289, 21013],
+    [55789, 32952],
+    [4369, 32776],
+    [55309, 46267],
+    [4865, 46059],
 ]
 
-
-NEUTRAL_DISTANCE = 8192
+# So there's no position where we oscillate between gears
+ENTER_GEAR_DISTANCE = 8192
+EXIT_GEAR_DISTANCE = ENTER_GEAR_DISTANCE + 512
 
 js = Joystick()
 
@@ -77,28 +78,33 @@ reverse.switch_to_input()
 
 
 def calibrate():
+    input("Press <Enter> to begin calibration.")
     for i in range(6):
-        input(f"Shift to {i}")
+        input(f"Shift to {i} then press <Enter>")
         positions.append((axis_0.value, axis_1.value))
 
     print(json.dumps(positions))
 
 
-def find_gear():
+def find_gear(gear):
     position = (axis_0.value, axis_1.value)
     min_distance = 131072
-    gear = -1
+
     for i, pos in enumerate(positions):
         distance = abs(position[0] - pos[0]) + abs(position[1] - pos[1])
         if distance < min_distance:
             min_distance = distance
             gear = i
 
-    if min_distance < NEUTRAL_DISTANCE:
+    if min_distance < ENTER_GEAR_DISTANCE:
         if gear == 5 and reverse.value:
             gear = 6
         return gear
-    return -1
+
+    if min_distance >= EXIT_GEAR_DISTANCE:
+        return -1
+
+    return gear
 
 
 if not positions:
@@ -108,7 +114,7 @@ if not positions:
 gear = -2  # invalid gear
 
 while True:
-    new_gear = find_gear()
+    new_gear = find_gear(gear)
     if gear != new_gear:
         gear = new_gear
         print(f"Gear {gear}")
